@@ -55,12 +55,17 @@ document.addEventListener('DOMContentLoaded', () => {
             video.preload = 'metadata'; // Force metadata load
             video.src = url;
             video.onloadedmetadata = () => resolve(true);
-            video.onerror = () => resolve(false);
+            video.onerror = () => {
+                console.warn(`Error loading video: ${url}`);
+                resolve(false);
+            };
             // Fallback timeout to prevent infinite hanging
+            // Increased to 5s for GitHub Pages latency
             setTimeout(() => {
                 video.src = ""; // Stop loading attempt
+                console.warn(`Timeout checking: ${url}`);
                 resolve(false);
-            }, 1000); // 1 second timeout
+            }, 5000); // 5 second timeout
         });
     }
 
