@@ -367,31 +367,24 @@ document.addEventListener('DOMContentLoaded', () => {
             // 3. Update Classes & State
             item.className = 'carousel-item'; // Reset baseline
 
-            // Calculate Circular Indices
-            const len = currentPlaylist.length;
-            const prevIndex = (currentPlaylistIndex - 1 + len) % len;
-            const nextIndex = (currentPlaylistIndex + 1) % len;
+            // Calculate Linear Indices (No Modulo)
+            const prevIndex = currentPlaylistIndex > 0 ? currentPlaylistIndex - 1 : -1;
+            const nextIndex = currentPlaylistIndex < len - 1 ? currentPlaylistIndex + 1 : -1;
+
+            // Reset all first
+            item.classList.remove('active', 'prev', 'next', 'hidden');
+            item.style.display = 'block';
 
             if (i === currentPlaylistIndex) {
-                // ACTIVE ITEM
                 item.classList.add('active');
-
-                // Play logic
                 if (ytId) {
-                    // For YouTube, we append autoplay param to URL to force play
-                    // (Re-setting src is the most reliable way for simple iframes)
-                    if (!item.src.includes('autoplay=1')) {
-                        item.src += "&autoplay=1&mute=1";
-                    }
+                    if (!item.src.includes('autoplay=1')) item.src += "&autoplay=1&mute=1";
                 } else {
-                    item.muted = false; // Unmute active if desired, or keep muted
+                    item.muted = false;
                     const playPromise = item.play();
-                    if (playPromise !== undefined) {
-                        playPromise.catch(e => console.error("Play Error:", e));
-                    }
+                    if (playPromise !== undefined) playPromise.catch(() => { });
                     item.controls = true;
                 }
-
             } else if (i === prevIndex) {
                 item.classList.add('prev');
                 pauseItem(item, ytId);
@@ -399,7 +392,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 item.classList.add('next');
                 pauseItem(item, ytId);
             } else {
-                item.style.display = 'none'; // Optimize performance
+                item.classList.add('hidden');
+                item.style.display = 'none';
+                pauseItem(item, ytId);
             }
         });
 
@@ -457,8 +452,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (nextBtn) {
         nextBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            if (currentPlaylist.length > 0) {
-                currentPlaylistIndex = (currentPlaylistIndex + 1) % currentPlaylist.length;
+            if (currentPlaylist.length > 0 && currentPlaylistIndex < currentPlaylist.length - 1) {
+                currentPlaylistIndex++;
                 updateModalContent();
             }
         });
@@ -467,8 +462,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (prevBtn) {
         prevBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            if (currentPlaylist.length > 0) {
-                currentPlaylistIndex = (currentPlaylistIndex - 1 + currentPlaylist.length) % currentPlaylist.length;
+            if (currentPlaylist.length > 0 && currentPlaylistIndex > 0) {
+                currentPlaylistIndex--;
                 updateModalContent();
             }
         });
