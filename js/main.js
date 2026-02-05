@@ -135,8 +135,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
 
-            // Initialize Infinite Scroll logic *after* items are rendered
-            initInfiniteScroll();
         }
     }
 
@@ -182,34 +180,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- 4. INFINITE SCROLL LOGIC ---
-    function initInfiniteScroll() {
-        const scrollers = document.querySelectorAll('.media-scroller');
-        scrollers.forEach(scroller => {
-            const originalItems = Array.from(scroller.children);
-            if (originalItems.length === 0) return;
+    // --- 4. INFINITE SCROLL LOGIC REMOVED ---
 
-            // Simple cloning logic to fill space if needed
-            // (Simplified from previous version to avoid excessive cloning if items are few)
-            // But we keep the loop capability
-            const itemWidth = originalItems[0].offsetWidth + 32;
-            const totalSetWidth = itemWidth * originalItems.length;
-
-            if (totalSetWidth < window.innerWidth * 2) {
-                // Clone to ensure we have enough content to scroll
-                originalItems.forEach(item => {
-                    const clone = item.cloneNode(true);
-                    clone.setAttribute('aria-hidden', 'true');
-                    scroller.appendChild(clone);
-                });
-            }
-
-            // Scroll Handler
-            scroller.addEventListener('scroll', () => {
-                // Basic horizontal scroll behavior
-            });
-        });
-    }
 
     // --- 5. DYNAMIC VIDEO LOADING (MODAL) ---
     const modal = document.getElementById('album-modal');
