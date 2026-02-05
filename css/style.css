@@ -719,8 +719,8 @@ a:hover {
     left: 50%;
     transform: translate(-50%, -50%) scale(1);
     filter: blur(0) brightness(1);
-    /* DEBUG: Temporary border to see if element exists */
-    border: 2px solid red;
+    transform: translate(-50%, -50%) scale(1);
+    filter: blur(0) brightness(1);
 }
 
 /* Previous (Left) */

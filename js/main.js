@@ -400,12 +400,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         playPromise.catch(e => console.error("Play Error:", e));
                     }
                     item.controls = true;
-
-                    // DEBUG: Log video info
-                    console.log(`[Active Video Debug] Index: ${i}, Src: ${item.src}`);
-                    console.log(`Dimensions: ${item.videoWidth}x${item.videoHeight}, ReadyState: ${item.readyState}`);
-                    item.addEventListener('error', (e) => console.error("Video Error Event:", item.error));
-                    item.addEventListener('loadedmetadata', () => console.log(`Metadata Loaded: ${item.videoWidth}x${item.videoHeight}`));
                 }
 
             } else if (i === prevIndex) {
