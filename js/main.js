@@ -367,8 +367,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     item.className = 'carousel-item';
                     item.src = `https://www.youtube.com/embed/${ytId}?enablejsapi=1&controls=0&rel=0&playsinline=1&iv_load_policy=3`;
                     item.allow = "autoplay; encrypted-media";
+                    item.allow = "autoplay; encrypted-media";
                     item.setAttribute('data-vid-index', i);
                     item.setAttribute('frameborder', '0');
+                    // Force styles inline to bypass any CSS selector issues
+                    item.style.width = "100%";
+                    item.style.height = "100%";
+                    item.style.objectFit = "contain";
                 } else {
                     // CREATE STANDARD VIDEO
                     item = document.createElement('video');
