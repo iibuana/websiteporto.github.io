@@ -11,10 +11,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 poster: "assets/images/wedding/1.jpg",
                 // YOUTUBE VIDEOS (Use "youtube:" prefix or just ID)
                 videos: [
-                    "https://youtube.com/shorts/97zgS5Lc9N4?feature=share", // Placeholder for user 
+                    "https://youtube.com/shorts/v2cWKYKMazY?feature=share", // STANDARD VIDEO (4K Nature) for testing
                     "https://youtube.com/shorts/FlMNpQ1Rku0?feature=share",
-                    "https://youtube.com/shorts/v2cWKYKMazY?feature=share",
-                    "https://youtube.com/shorts/4gqtaBUlTEY?feature=share"
+                    "https://youtube.com/shorts/97zgS5Lc9N4?feature=share",
+                    "https://youtu.be/ckeCT3sEp3Q", // STANDARD VIDEO (4K Nature) for testing
+                    "https://youtube.com/shorts/4gqtaBUlTEY?feature=share",
+                    "https://youtu.be/hVQRW1wY1rI",
+                    "https://youtube.com/shorts/R4XVyfdvLdI",
+                    "https://youtube.com/shorts/j5aY29AmNsg?feature=share"
                 ]
             },
             {
@@ -27,25 +31,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 title: "Commercial",
                 subtitle: "Brand Campaign",
                 folder: "commercial",
-                poster: "assets/images/portrait/1.jpg",
-                videos: [
-                    "https://youtube.com/shorts/97zgS5Lc9N4?feature=share", // Placeholder for user 
-                    "https://youtube.com/shorts/FlMNpQ1Rku0?feature=share",
-                    "https://youtube.com/shorts/v2cWKYKMazY?feature=share",
-                    "https://youtube.com/shorts/4gqtaBUlTEY?feature=share"
-                ]
+                poster: "assets/images/portrait/1.jpg"
+
             },
             {
                 title: "Short Film",
                 subtitle: "Short Film",
                 folder: "documentary",
-                poster: "assets/images/landscape/1.jpg",
-                videos: [
-                    "https://youtube.com/shorts/97zgS5Lc9N4?feature=share", // Placeholder for user 
-                    "https://youtube.com/shorts/FlMNpQ1Rku0?feature=share",
-                    "https://youtube.com/shorts/v2cWKYKMazY?feature=share",
-                    "https://youtube.com/shorts/4gqtaBUlTEY?feature=share"
-                ]
+                poster: "assets/images/landscape/1.jpg"
+
             }
         ],    /* 
        CARA MENGGUNAKAN VIDEO GOOGLE DRIVE / LINK EKSTERNAL:
@@ -106,55 +100,87 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- 2. GENERATE HTML (Render Albums) ---
-    async function renderAlbums() {
+    // --- 2. GENERATE HTML (Render Albums) ---
+    // --- 2. GENERATE HTML (Render Albums) ---
+    function renderAlbums() {
         const videoContainer = document.getElementById('video-scroller');
+        if (!videoContainer) return;
 
-        if (videoContainer) {
-            videoContainer.innerHTML = ''; // Clear existing
+        videoContainer.innerHTML = ''; // Clear existing
 
-            // Check all albums in parallel
-            const checks = albumsConfig.cinematography.map(async (album, originalIndex) => {
-                // Priority 1: Check for explicit external videos
-                if (album.videos && album.videos.length > 0) {
-                    return { album, originalIndex, hasVideo: true, videoSrc: album.videos[0] };
-                }
+        // Check availability
+        if (!albumsConfig || !albumsConfig.cinematography) return;
 
-                // Priority 2: Check for local 1.mp4
-                const localPath = `assets/videos/${album.folder}/1.mp4`;
-                const hasVideo = await checkVideoExists(localPath);
-                return { album, originalIndex, hasVideo, videoSrc: localPath };
-            });
+        // Loop through ALBUMS
+        albumsConfig.cinematography.forEach(album => {
+            // Loop through VIDEOS in the album
+            if (album.videos && album.videos.length > 0) {
+                album.videos.forEach((videoUrl, index) => {
+                    const ytId = getYouTubeId(videoUrl);
+                    if (ytId) {
+                        const isShorts = videoUrl.includes('/shorts/');
+                        const orientationClass = isShorts ? 'video-vertical' : 'video-horizontal';
+                        const thumbUrl = `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`;
 
-            const results = await Promise.all(checks);
+                        // Create Card Container
+                        const card = document.createElement('div');
+                        card.className = `media-element ${orientationClass}`;
+                        card.setAttribute('data-yt-id', ytId);
+                        card.setAttribute('data-thumb', thumbUrl);
+                        card.setAttribute('onclick', 'playVideo(this)');
 
-            results.forEach(({ album, originalIndex, hasVideo, videoSrc }) => {
-                if (hasVideo) {
-                    const html = `
-                        <div class="media-element video-element" data-index="${originalIndex}">
-                            <video src="${videoSrc}" 
-                                 class="placeholder-media" 
-                                 poster="${album.poster}"
-                                 muted loop autoplay playsinline
-                                 onmouseover="this.play()" 
-                                 onmouseout="this.play()"
-                                 onerror="this.src=''; this.poster='assets/images/video-placeholder.jpg';"> 
-                            </video>
-                            
-                            <div class="play-button">▶</div>
-                            <div class="media-caption">
-                                <h3>${album.title}</h3>
-                                <p>${album.subtitle}</p>
+                        // Initial Content: Thumbnail + Play Button
+                        card.innerHTML = `
+                            <div class="video-thumbnail" style="background-image: url('${thumbUrl}')"></div>
+                            <div class="play-overlay">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="white">
+                                    <path d="M8 5v14l11-7z"/>
+                                </svg>
                             </div>
-                        </div>
-                    `;
-                    videoContainer.insertAdjacentHTML('beforeend', html);
-                } else {
-                    console.log(`Hidden album: ${album.title} (Reason: 1.mp4 not found)`);
-                }
-            });
+                         `;
 
-        }
+                        videoContainer.appendChild(card);
+                    }
+                });
+            }
+        });
     }
+
+    // Global function for click handler
+    window.playVideo = function (card) {
+        const ytId = card.getAttribute('data-yt-id');
+        const isPlaying = card.classList.contains('video-playing');
+
+        // 1. Reset ANY currently playing video
+        const currentPlaying = document.querySelector('.media-element.video-playing');
+        if (currentPlaying && currentPlaying !== card) {
+            const oldThumb = currentPlaying.getAttribute('data-thumb');
+            currentPlaying.classList.remove('video-playing');
+            currentPlaying.innerHTML = `
+                <div class="video-thumbnail" style="background-image: url('${oldThumb}')"></div>
+                <div class="play-overlay">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="white">
+                        <path d="M8 5v14l11-7z"/>
+                    </svg>
+                </div>
+            `;
+        }
+
+        // 2. Play THIS video (if not already playing)
+        if (!isPlaying) {
+            card.classList.add('video-playing');
+            card.innerHTML = `
+                <iframe 
+                    src="https://www.youtube.com/embed/${ytId}?autoplay=1&controls=1&rel=0&playsinline=1" 
+                    title="YouTube video player" 
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                    allowfullscreen
+                    style="width: 100%; height: 100%; border: none;">
+                </iframe>
+            `;
+        }
+    };
 
     renderAlbums(); // Execute immediately
 
@@ -198,233 +224,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- 4. INFINITE SCROLL LOGIC REMOVED ---
-
-
-    // --- 5. DYNAMIC VIDEO LOADING (MODAL) ---
-    const modal = document.getElementById('album-modal');
-    const modalContainer = document.querySelector('.modal-media-container');
-    const modalTitle = document.getElementById('modal-title');
-    const modalDesc = document.getElementById('modal-desc');
-    const closeBtn = document.querySelector('.close-modal');
-    const prevBtn = document.querySelector('.prev-btn');
-    const nextBtn = document.querySelector('.next-btn');
-
-    let currentPlaylist = []; // Array of video URLs found
-    let currentPlaylistIndex = 0;
-    let currentAlbumConfig = null;
-
-    let currentScannerId = 0; // Token to cancel old scans
-
-    // Scanner Function
-    function VideoScanner(folderName, startIndex = 1, scannerId) {
-        return new Promise(async (resolve) => {
-            let videos = [];
-            let index = startIndex;
-            let searching = true;
-            const maxLimit = 20; // Safety limit to prevent infinite loops
-
-            console.log(`[Scanner #${scannerId}] Scanning ${folderName} from ${index}...`);
-
-            while (searching && index < maxLimit) {
-                // Check if this scanner was cancelled
-                if (scannerId !== currentScannerId) {
-                    console.log(`[Scanner #${scannerId}] Aborted.`);
-                    resolve([]); // Stop immediately
-                    return;
-                }
-
-                const path = `assets/videos/${folderName}/${index}.mp4`;
-                const exists = await checkVideoExists(path);
-
-                if (exists) {
-                    console.log(`Found: ${path}`);
-                    videos.push(path);
-                    index++;
-                } else {
-                    console.log(`Not found (stops scanning): ${path}`);
-                    searching = false;
-                }
-            }
-            resolve(videos);
-        });
-    }
-
-    // Modal Event Delegation
-    document.addEventListener('click', async (e) => {
-        const item = e.target.closest('.media-element');
-        if (!item) return;
-
-        const index = item.getAttribute('data-index');
-        if (index === null) return;
-
-        currentAlbumConfig = albumsConfig.cinematography[parseInt(index)];
-        console.log("Opening album:", currentAlbumConfig.title);
-
-        // --- OPTIMISTIC LOADING START ---
-        // 1. Open Modal Immediately
-        modal.classList.add('open');
-        document.body.style.overflow = 'hidden';
-
-        currentScannerId++; // Invalidate old scans
-        const myScannerId = currentScannerId;
-
-        // Cleanup previous media first
-        const legacyTracks = modalContainer.querySelectorAll('.carousel-track');
-        legacyTracks.forEach(t => t.remove()); // Force clean start
-        const legacyMedia = modalContainer.querySelectorAll('.modal-media');
-        legacyMedia.forEach(m => m.remove());
-
-        // 2. Determine Playlist Source
-        if (currentAlbumConfig.videos && currentAlbumConfig.videos.length > 0) {
-            // EXTERNAL / EXPLICIT MODE
-            currentPlaylist = currentAlbumConfig.videos;
-            currentPlaylistIndex = 0;
-            console.log("Using explicit video list (External Mode). Total:", currentPlaylist.length);
-
-            // Render immediately
-            updateModalContent();
-            updateModalUI();
-        } else {
-            // LOCAL FOLDER SCAN MODE
-            // Play first video (we assume it exists because renderAlbums checked it)
-            const firstVideo = `assets/videos/${currentAlbumConfig.folder}/1.mp4`;
-            currentPlaylist = [firstVideo];
-            currentPlaylistIndex = 0;
-
-            // Render & Play Immediately
-            updateModalContent();
-
-            // 3. Background Scan for MORE (starting from 2)
-            // Update UI to show "Video 1 / ?"
-            modalDesc.textContent = `Video 1 / ...`;
-
-            // Pass ID to scanner
-            const moreVideos = await VideoScanner(currentAlbumConfig.folder, 2, myScannerId);
-
-            // Only update if we are still the active scanner
-            if (myScannerId === currentScannerId) {
-                if (moreVideos.length > 0) {
-                    // Append found videos to playlist
-                    currentPlaylist = [...currentPlaylist, ...moreVideos];
-
-                    console.log("Background scan found videos. Total:", currentPlaylist.length);
-                    console.log("Current Playlist:", JSON.stringify(currentPlaylist)); // DEBUG
-
-                    updateModalUI();
-                    updateModalContent(); // Refresh UI with new slides
-                } else {
-                    console.log("No more videos found.");
-                    // Even if no more found, if we only have 2, duplicate 'em now
-                    // if (currentPlaylist.length === 2) {
-                    //     currentPlaylist = [...currentPlaylist, ...currentPlaylist];
-                    //     updateModalContent();
-                    // }
-                    updateModalUI(); // Remove "..."
-                }
-            }
-        }
-
-        // --- OPTIMISTIC LOADING END ---
-    });
-
-    function updateModalUI() {
-        modalTitle.textContent = currentAlbumConfig.title;
-        modalDesc.textContent = `Video ${currentPlaylistIndex + 1} / ${currentPlaylist.length}`;
-        // Can add logic here to show/hide next/prev buttons based on length
-    }
-
-    function updateModalContent() {
-        console.log("updateModalContent called. Playlist length:", currentPlaylist.length);
-        if (currentPlaylist.length === 0) {
-            console.error("Playlist is empty!");
-            return;
-        }
-
-        // 1. Ensure Track Exists
-        // 1. Ensure Track Exists
-        let track = modalContainer.querySelector('.carousel-track');
-        if (!track) {
-            // Remove legacy media if present
-            const legacy = modalContainer.querySelector('.modal-media');
-            if (legacy) legacy.remove();
-
-            track = document.createElement('div');
-            track.className = 'carousel-track';
-            // Insert at top, before caption
-            modalContainer.prepend(track);
-        }
-
-        // 2. Sync DOM with Playlist
-        currentPlaylist.forEach((url, i) => {
-            const ytId = getYouTubeId(url);
-            let item = track.querySelector(`[data-vid-index="${i}"]`);
-
-            if (!item) {
-                if (ytId) {
-                    // CREATE YOUTUBE IFRAME
-                    item = document.createElement('iframe');
-                    item.className = 'carousel-item';
-                    item.src = `https://www.youtube.com/embed/${ytId}?enablejsapi=1&controls=0&rel=0&playsinline=1&iv_load_policy=3`;
-                    item.allow = "autoplay; encrypted-media";
-                    item.allow = "autoplay; encrypted-media";
-                    item.setAttribute('data-vid-index', i);
-                    item.setAttribute('frameborder', '0');
-                    // Force styles inline to bypass any CSS selector issues
-                    item.style.width = "100%";
-                    item.style.height = "100%";
-                    item.style.objectFit = "contain";
-                } else {
-                    // CREATE STANDARD VIDEO
-                    item = document.createElement('video');
-                    item.className = 'carousel-item';
-                    item.src = url;
-                    item.setAttribute('data-vid-index', i);
-                    item.setAttribute('playsinline', '');
-                    item.setAttribute('webkit-playsinline', '');
-                    item.preload = 'auto';
-                }
-                track.appendChild(item);
-            }
-
-            // 3. Update Classes & State
-            item.className = 'carousel-item'; // Reset baseline
-
-            // Calculate Linear Indices (No Modulo)
-            const prevIndex = currentPlaylistIndex > 0 ? currentPlaylistIndex - 1 : -1;
-            const nextIndex = currentPlaylistIndex < len - 1 ? currentPlaylistIndex + 1 : -1;
-
-            // Reset all first
-            item.classList.remove('active', 'prev', 'next', 'hidden');
-            item.style.display = 'block';
-
-            if (i === currentPlaylistIndex) {
-                item.classList.add('active');
-                if (ytId) {
-                    if (!item.src.includes('autoplay=1')) item.src += "&autoplay=1&mute=1";
-                } else {
-                    item.muted = false;
-                    const playPromise = item.play();
-                    if (playPromise !== undefined) playPromise.catch(() => { });
-                    item.controls = true;
-                }
-            } else if (i === prevIndex) {
-                item.classList.add('prev');
-                pauseItem(item, ytId);
-            } else if (i === nextIndex) {
-                item.classList.add('next');
-                pauseItem(item, ytId);
-            } else {
-                item.classList.add('hidden');
-                item.style.display = 'none';
-                pauseItem(item, ytId);
-            }
-        });
-
-        modalTitle.textContent = currentAlbumConfig.title;
-        updateModalUI();
-    }
-
     function getYouTubeId(url) {
         if (!url) return null;
         if (url.startsWith('youtube:')) return url.split(':')[1];
@@ -434,69 +233,5 @@ document.addEventListener('DOMContentLoaded', () => {
         const match = url.match(regExp);
         return (match && match[2].length === 11) ? match[2] : null;
     }
-
-    function pauseItem(item, isYoutube) {
-        if (isYoutube) {
-            // Reset src to stop youtube video
-            // We use 'postMessage' if we enabled JS API, but src reset is brute-force reliable
-            const src = item.src;
-            // A simple src reset stops the video
-            item.src = src;
-        } else {
-            item.controls = false;
-            item.pause();
-            item.muted = true;
-        }
-    }
-
-    // Close Modal Controls
-    if (closeBtn) closeBtn.addEventListener('click', closeModal);
-    if (modal) modal.addEventListener('click', (e) => {
-        if (e.target === modal || e.target === document.querySelector('.modal-content')) {
-            closeModal();
-        }
-    });
-
-    function closeModal() {
-        currentScannerId++; // Stop any running background scans
-        modal.classList.remove('open');
-        document.body.style.overflow = '';
-
-        // Stop all videos
-        const videos = modalContainer.querySelectorAll('video');
-        videos.forEach(v => {
-            v.pause();
-            v.src = "";
-            v.load();
-        });
-        modalContainer.innerHTML = ''; // Deep clean
-    }
-
-    if (nextBtn) {
-        nextBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            if (currentPlaylist.length > 0 && currentPlaylistIndex < currentPlaylist.length - 1) {
-                currentPlaylistIndex++;
-                updateModalContent();
-            }
-        });
-    }
-
-    if (prevBtn) {
-        prevBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            if (currentPlaylist.length > 0 && currentPlaylistIndex > 0) {
-                currentPlaylistIndex--;
-                updateModalContent();
-            }
-        });
-    }
-
-    document.addEventListener('keydown', (e) => {
-        if (!modal || !modal.classList.contains('open')) return;
-        if (e.key === 'Escape') closeModal();
-        if (e.key === 'ArrowRight') nextBtn && nextBtn.click();
-        if (e.key === 'ArrowLeft') prevBtn && prevBtn.click();
-    });
 
 });
