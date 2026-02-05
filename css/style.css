@@ -686,8 +686,7 @@ a:hover {
     border-radius: 0;
 }
 
-.carousel-item video,
-.carousel-item iframe {
+.carousel-item video {
     width: auto;
     height: 100%;
     /* Force height to fill wrapper */
@@ -704,10 +703,14 @@ a:hover {
     /* For iframe */
 }
 
-/* Specific fix for iframe aspect ratio to avoid black bars if possible */
+/* Specific fix for iframe aspect ratio */
 .carousel-item iframe {
+    width: 100%;
+    height: 100%;
+    max-width: 50vh;
+    /* Approximate 9:16 relative to screen height */
     aspect-ratio: 9/16;
-    /* Default vertical, but can be overridden */
+}
 }
 
 /* --- STATES --- */
