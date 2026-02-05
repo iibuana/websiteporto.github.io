@@ -27,13 +27,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 title: "Commercial",
                 subtitle: "Brand Campaign",
                 folder: "commercial",
-                poster: "assets/images/portrait/1.jpg"
+                poster: "assets/images/portrait/1.jpg",
+                videos: [
+                    "https://youtube.com/shorts/97zgS5Lc9N4?feature=share", // Placeholder for user 
+                    "https://youtube.com/shorts/FlMNpQ1Rku0?feature=share",
+                    "https://youtube.com/shorts/v2cWKYKMazY?feature=share",
+                    "https://youtube.com/shorts/4gqtaBUlTEY?feature=share"
+                ]
             },
             {
                 title: "Short Film",
                 subtitle: "Short Film",
                 folder: "documentary",
-                poster: "assets/images/landscape/1.jpg"
+                poster: "assets/images/landscape/1.jpg",
+                videos: [
+                    "https://youtube.com/shorts/97zgS5Lc9N4?feature=share", // Placeholder for user 
+                    "https://youtube.com/shorts/FlMNpQ1Rku0?feature=share",
+                    "https://youtube.com/shorts/v2cWKYKMazY?feature=share",
+                    "https://youtube.com/shorts/4gqtaBUlTEY?feature=share"
+                ]
             }
         ],    /* 
        CARA MENGGUNAKAN VIDEO GOOGLE DRIVE / LINK EKSTERNAL:
