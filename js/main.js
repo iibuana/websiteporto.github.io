@@ -323,164 +323,163 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateModalContent() {
-        try {
-            console.log("updateModalContent called. Playlist length:", currentPlaylist.length);
-            if (currentPlaylist.length === 0) {
-                console.error("Playlist is empty!");
-                return;
-            }
-
-            // 1. Ensure Track Exists
-            // 1. Ensure Track Exists
-            let track = modalContainer.querySelector('.carousel-track');
-            if (!track) {
-                // Remove legacy media if present
-                const legacy = modalContainer.querySelector('.modal-media');
-                if (legacy) legacy.remove();
-
-                track = document.createElement('div');
-                track.className = 'carousel-track';
-                // Insert at top, before caption
-                modalContainer.prepend(track);
-            }
-
-            // 2. Sync DOM with Playlist
-            currentPlaylist.forEach((url, i) => {
-                const ytId = getYouTubeId(url);
-                let item = track.querySelector(`[data-vid-index="${i}"]`);
-
-                if (!item) {
-                    if (ytId) {
-                        // CREATE YOUTUBE IFRAME
-                        item = document.createElement('iframe');
-                        item.className = 'carousel-item';
-                        item.src = `https://www.youtube.com/embed/${ytId}?enablejsapi=1&controls=0&rel=0&playsinline=1&iv_load_policy=3`;
-                        item.allow = "autoplay; encrypted-media";
-                        item.setAttribute('data-vid-index', i);
-                        item.setAttribute('frameborder', '0');
-                    } else {
-                        // CREATE STANDARD VIDEO
-                        item = document.createElement('video');
-                        item.className = 'carousel-item';
-                        item.src = url;
-                        item.setAttribute('data-vid-index', i);
-                        item.setAttribute('playsinline', '');
-                        item.setAttribute('webkit-playsinline', '');
-                        item.preload = 'auto';
-                    }
-                    track.appendChild(item);
-                }
-
-                // 3. Update Classes & State
-                item.className = 'carousel-item'; // Reset baseline
-
-                // Calculate Linear Indices (No Modulo)
-                const prevIndex = currentPlaylistIndex > 0 ? currentPlaylistIndex - 1 : -1;
-                const nextIndex = currentPlaylistIndex < len - 1 ? currentPlaylistIndex + 1 : -1;
-
-                // Reset all first
-                item.classList.remove('active', 'prev', 'next', 'hidden');
-                item.style.display = 'block';
-
-                if (i === currentPlaylistIndex) {
-                    item.classList.add('active');
-                    if (ytId) {
-                        if (!item.src.includes('autoplay=1')) item.src += "&autoplay=1&mute=1";
-                    } else {
-                        item.muted = false;
-                        const playPromise = item.play();
-                        if (playPromise !== undefined) playPromise.catch(() => { });
-                        item.controls = true;
-                    }
-                } else if (i === prevIndex) {
-                    item.classList.add('prev');
-                    pauseItem(item, ytId);
-                } else if (i === nextIndex) {
-                    item.classList.add('next');
-                    pauseItem(item, ytId);
-                } else {
-                    item.classList.add('hidden');
-                    item.style.display = 'none';
-                    pauseItem(item, ytId);
-                }
-            });
-
-            modalTitle.textContent = currentAlbumConfig.title;
-            updateModalUI();
+        console.log("updateModalContent called. Playlist length:", currentPlaylist.length);
+        if (currentPlaylist.length === 0) {
+            console.error("Playlist is empty!");
+            return;
         }
+
+        // 1. Ensure Track Exists
+        // 1. Ensure Track Exists
+        let track = modalContainer.querySelector('.carousel-track');
+        if (!track) {
+            // Remove legacy media if present
+            const legacy = modalContainer.querySelector('.modal-media');
+            if (legacy) legacy.remove();
+
+            track = document.createElement('div');
+            track.className = 'carousel-track';
+            // Insert at top, before caption
+            modalContainer.prepend(track);
+        }
+
+        // 2. Sync DOM with Playlist
+        currentPlaylist.forEach((url, i) => {
+            const ytId = getYouTubeId(url);
+            let item = track.querySelector(`[data-vid-index="${i}"]`);
+
+            if (!item) {
+                if (ytId) {
+                    // CREATE YOUTUBE IFRAME
+                    item = document.createElement('iframe');
+                    item.className = 'carousel-item';
+                    item.src = `https://www.youtube.com/embed/${ytId}?enablejsapi=1&controls=0&rel=0&playsinline=1&iv_load_policy=3`;
+                    item.allow = "autoplay; encrypted-media";
+                    item.setAttribute('data-vid-index', i);
+                    item.setAttribute('frameborder', '0');
+                } else {
+                    // CREATE STANDARD VIDEO
+                    item = document.createElement('video');
+                    item.className = 'carousel-item';
+                    item.src = url;
+                    item.setAttribute('data-vid-index', i);
+                    item.setAttribute('playsinline', '');
+                    item.setAttribute('webkit-playsinline', '');
+                    item.preload = 'auto';
+                }
+                track.appendChild(item);
+            }
+
+            // 3. Update Classes & State
+            item.className = 'carousel-item'; // Reset baseline
+
+            // Calculate Linear Indices (No Modulo)
+            const prevIndex = currentPlaylistIndex > 0 ? currentPlaylistIndex - 1 : -1;
+            const nextIndex = currentPlaylistIndex < len - 1 ? currentPlaylistIndex + 1 : -1;
+
+            // Reset all first
+            item.classList.remove('active', 'prev', 'next', 'hidden');
+            item.style.display = 'block';
+
+            if (i === currentPlaylistIndex) {
+                item.classList.add('active');
+                if (ytId) {
+                    if (!item.src.includes('autoplay=1')) item.src += "&autoplay=1&mute=1";
+                } else {
+                    item.muted = false;
+                    const playPromise = item.play();
+                    if (playPromise !== undefined) playPromise.catch(() => { });
+                    item.controls = true;
+                }
+            } else if (i === prevIndex) {
+                item.classList.add('prev');
+                pauseItem(item, ytId);
+            } else if (i === nextIndex) {
+                item.classList.add('next');
+                pauseItem(item, ytId);
+            } else {
+                item.classList.add('hidden');
+                item.style.display = 'none';
+                pauseItem(item, ytId);
+            }
+        });
+
+        modalTitle.textContent = currentAlbumConfig.title;
+        updateModalUI();
+    }
 
     function getYouTubeId(url) {
-            if (!url) return null;
-            if (url.startsWith('youtube:')) return url.split(':')[1];
+        if (!url) return null;
+        if (url.startsWith('youtube:')) return url.split(':')[1];
 
-            // Support Shorts, standard watch, and shortened URLs
-            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=|shorts\/)([^#&?]*).*/;
-            const match = url.match(regExp);
-            return (match && match[2].length === 11) ? match[2] : null;
+        // Support Shorts, standard watch, and shortened URLs
+        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=|shorts\/)([^#&?]*).*/;
+        const match = url.match(regExp);
+        return (match && match[2].length === 11) ? match[2] : null;
+    }
+
+    function pauseItem(item, isYoutube) {
+        if (isYoutube) {
+            // Reset src to stop youtube video
+            // We use 'postMessage' if we enabled JS API, but src reset is brute-force reliable
+            const src = item.src;
+            // A simple src reset stops the video
+            item.src = src;
+        } else {
+            item.controls = false;
+            item.pause();
+            item.muted = true;
         }
+    }
 
-        function pauseItem(item, isYoutube) {
-            if (isYoutube) {
-                // Reset src to stop youtube video
-                // We use 'postMessage' if we enabled JS API, but src reset is brute-force reliable
-                const src = item.src;
-                // A simple src reset stops the video
-                item.src = src;
-            } else {
-                item.controls = false;
-                item.pause();
-                item.muted = true;
-            }
+    // Close Modal Controls
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+    if (modal) modal.addEventListener('click', (e) => {
+        if (e.target === modal || e.target === document.querySelector('.modal-content')) {
+            closeModal();
         }
-
-        // Close Modal Controls
-        if (closeBtn) closeBtn.addEventListener('click', closeModal);
-        if (modal) modal.addEventListener('click', (e) => {
-            if (e.target === modal || e.target === document.querySelector('.modal-content')) {
-                closeModal();
-            }
-        });
-
-        function closeModal() {
-            currentScannerId++; // Stop any running background scans
-            modal.classList.remove('open');
-            document.body.style.overflow = '';
-
-            // Stop all videos
-            const videos = modalContainer.querySelectorAll('video');
-            videos.forEach(v => {
-                v.pause();
-                v.src = "";
-                v.load();
-            });
-            modalContainer.innerHTML = ''; // Deep clean
-        }
-
-        if (nextBtn) {
-            nextBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                if (currentPlaylist.length > 0 && currentPlaylistIndex < currentPlaylist.length - 1) {
-                    currentPlaylistIndex++;
-                    updateModalContent();
-                }
-            });
-        }
-
-        if (prevBtn) {
-            prevBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                if (currentPlaylist.length > 0 && currentPlaylistIndex > 0) {
-                    currentPlaylistIndex--;
-                    updateModalContent();
-                }
-            });
-        }
-
-        document.addEventListener('keydown', (e) => {
-            if (!modal || !modal.classList.contains('open')) return;
-            if (e.key === 'Escape') closeModal();
-            if (e.key === 'ArrowRight') nextBtn && nextBtn.click();
-            if (e.key === 'ArrowLeft') prevBtn && prevBtn.click();
-        });
-
     });
+
+    function closeModal() {
+        currentScannerId++; // Stop any running background scans
+        modal.classList.remove('open');
+        document.body.style.overflow = '';
+
+        // Stop all videos
+        const videos = modalContainer.querySelectorAll('video');
+        videos.forEach(v => {
+            v.pause();
+            v.src = "";
+            v.load();
+        });
+        modalContainer.innerHTML = ''; // Deep clean
+    }
+
+    if (nextBtn) {
+        nextBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (currentPlaylist.length > 0 && currentPlaylistIndex < currentPlaylist.length - 1) {
+                currentPlaylistIndex++;
+                updateModalContent();
+            }
+        });
+    }
+
+    if (prevBtn) {
+        prevBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (currentPlaylist.length > 0 && currentPlaylistIndex > 0) {
+                currentPlaylistIndex--;
+                updateModalContent();
+            }
+        });
+    }
+
+    document.addEventListener('keydown', (e) => {
+        if (!modal || !modal.classList.contains('open')) return;
+        if (e.key === 'Escape') closeModal();
+        if (e.key === 'ArrowRight') nextBtn && nextBtn.click();
+        if (e.key === 'ArrowLeft') prevBtn && prevBtn.click();
+    });
+
+});
