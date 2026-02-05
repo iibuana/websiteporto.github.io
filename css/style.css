@@ -719,8 +719,6 @@ a:hover {
     left: 50%;
     transform: translate(-50%, -50%) scale(1);
     filter: blur(0) brightness(1);
-    transform: translate(-50%, -50%) scale(1);
-    filter: blur(0) brightness(1);
 }
 
 /* Previous (Left) */
