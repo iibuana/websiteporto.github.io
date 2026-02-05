@@ -49,23 +49,41 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- 1.5 HELPER FUNCTIONS ---
     // Helper: Check if video exists by trying to load it
     // Helper: Check if video exists by trying to load it
+    // Helper: Check if video exists
+    // HYBRID STRATEGY: Use fetch() for Web (faster), fallback to Video Element for Local (file://)
     function checkVideoExists(url) {
         return new Promise((resolve) => {
+            // Strategy A: HTTP/HTTPS (GitHub Pages, Server)
+            if (window.location.protocol.startsWith('http')) {
+                fetch(url, { method: 'HEAD' })
+                    .then(res => {
+                        if (res.ok) resolve(true);
+                        else resolve(false);
+                    })
+                    .catch(() => {
+                        // If fetch fails (CORS etc), try fallback
+                        checkVideoFallback(url).then(resolve);
+                    });
+            } else {
+                // Strategy B: Local File System (file://)
+                checkVideoFallback(url).then(resolve);
+            }
+        });
+    }
+
+    // Classic Video Element Method (Reliable for local files, but needs timeout)
+    function checkVideoFallback(url) {
+        return new Promise((resolve) => {
             const video = document.createElement('video');
-            video.preload = 'metadata'; // Force metadata load
+            video.preload = 'metadata';
             video.src = url;
             video.onloadedmetadata = () => resolve(true);
-            video.onerror = () => {
-                console.warn(`Error loading video: ${url}`);
-                resolve(false);
-            };
-            // Fallback timeout to prevent infinite hanging
-            // Increased to 5s for GitHub Pages latency
+            video.onerror = () => resolve(false);
+            // Longer timeout for safety
             setTimeout(() => {
-                video.src = ""; // Stop loading attempt
-                console.warn(`Timeout checking: ${url}`);
+                video.src = "";
                 resolve(false);
-            }, 5000); // 5 second timeout
+            }, 5000);
         });
     }
 
