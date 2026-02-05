@@ -9,7 +9,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 folder: "reel",
                 // Use an existing image folder for poster fallback
                 poster: "assets/images/wedding/1.jpg",
-
+                // YOUTUBE VIDEOS (Use "youtube:" prefix or just ID)
+                videos: [
+                    "https://youtube.com/shorts/97zgS5Lc9N4?feature=share", // Placeholder for user 
+                    "https://youtube.com/shorts/FlMNpQ1Rku0?feature=share",
+                    "https://youtube.com/shorts/v2cWKYKMazY?feature=share",
+                    "https://youtube.com/shorts/4gqtaBUlTEY?feature=share"
+                ]
             },
             {
                 title: "Wedding Film",
