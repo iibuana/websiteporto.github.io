@@ -171,6 +171,15 @@ a:hover {
         inset 0 0 0 1px rgba(255, 255, 255, 0.08);
 }
 
+@media (max-width: 768px) {
+    .navbar {
+        position: absolute;
+        /* Stop sticky on mobile */
+        top: 20px;
+        width: 90%;
+    }
+}
+
 .nav-content {
     width: 100%;
     padding: 0 var(--spacing-md);
@@ -701,29 +710,7 @@ a:hover {
     border-color: var(--text-primary);
 }
 
-/* Reusing Masonry Grid Styles */
-.photo-grid {
-    column-count: 3;
-    column-gap: 24px;
-    padding: 0;
-    /* Remove padding as nav has it */
-}
 
-@media (max-width: 1024px) {
-    .photo-grid {
-        column-count: 2;
-    }
-}
-
-@media (max-width: 600px) {
-    .photo-grid {
-        column-count: 1;
-    }
-
-    .albums-grid {
-        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    }
-}
 
 .photo-item {
     break-inside: avoid;
