@@ -714,6 +714,24 @@ a:hover {
     overflow: hidden;
     cursor: zoom-in;
     transition: transform 0.3s ease;
+    /* Skeleton Loading State */
+    min-height: 300px;
+    background-color: #1a1a1a;
+    animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.7;
+    }
+
+    100% {
+        opacity: 1;
+    }
 }
 
 .photo-item img {

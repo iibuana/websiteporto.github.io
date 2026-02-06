@@ -57,18 +57,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     const item = document.createElement('div');
                     item.className = 'photo-item';
-                    item.style.display = 'none'; // Initially hidden
+                    // item.style.display = 'none'; // REMOVED: Keep display block for skeleton to work
 
                     const img = document.createElement('img');
                     img.src = src;
                     img.alt = `${cat.title} ${i}`;
-                    img.loading = "lazy";
+
+                    // Optimization: Load first 4 images eagerly, rest lazily
+                    img.loading = (i <= 4) ? "eager" : "lazy";
+
+                    // Initially hide image (opacity 0) to fade in
+                    img.style.opacity = "0";
+                    img.style.transition = "opacity 0.5s ease";
 
                     // AUTO-DETECT LOGIC:
-                    // If loads: Show it.
-                    // If fails: Remove it.
                     img.onload = function () {
-                        item.style.display = 'block';
+                        // Reveal image
+                        img.style.opacity = "1";
+                        // Stop skeleton pulse
+                        item.style.animation = "none";
+                        item.style.backgroundColor = "transparent";
+                        item.style.minHeight = "auto"; // Let image dictate height
                     };
                     img.onerror = function () {
                         item.remove();
