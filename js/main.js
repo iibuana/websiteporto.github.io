@@ -1,5 +1,65 @@
 document.addEventListener('DOMContentLoaded', () => {
 
+    // --- 0. PHOTOGRAPHY PORTFOLIO (Masonry Grid) ---
+    const photosConfig = [
+        { src: 'assets/images/wedding/1.jpg', category: 'Wedding' },
+        { src: 'assets/images/portrait/1.jpg', category: 'Portrait' },
+        { src: 'assets/images/landscape/1.jpg', category: 'Landscape' },
+        { src: 'assets/images/wisuda/1.jpg', category: 'Graduation' },
+        { src: 'assets/images/wedding/1.jpg', category: 'Wedding' }, // Demo Duplicate
+        { src: 'assets/images/landscape/1.jpg', category: 'Landscape' } // Demo Duplicate
+    ];
+
+    function renderPhotos() {
+        console.log("Initializing Photography Grid...");
+        const grid = document.getElementById('photo-grid');
+
+        if (!grid) {
+            console.error("CRITICAL: #photo-grid element not found in HTML!");
+            return;
+        }
+
+        // Clear previous content (if any)
+        grid.innerHTML = '';
+
+        let loadedCount = 0;
+
+        photosConfig.forEach((photo, index) => {
+            const item = document.createElement('div');
+            item.className = 'photo-item';
+
+            // Image with Fallback
+            const img = document.createElement('img');
+            img.src = photo.src;
+            img.alt = photo.category;
+            img.loading = "lazy";
+
+            // Error Handler: If image is missing, show a grey box
+            img.onerror = function () {
+                console.warn(`Image failed to load: ${photo.src}`);
+                this.style.display = 'none'; // Hide broken image
+                item.style.backgroundColor = '#333'; // Grey placeholder
+                item.style.minHeight = '200px';
+                item.innerHTML += `<span style="color:white;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)">Image Not Found</span>`;
+            };
+
+            img.onload = () => {
+                loadedCount++;
+                console.log(`Image loaded: ${photo.src} (${loadedCount}/${photosConfig.length})`);
+            };
+
+            const overlay = document.createElement('div');
+            overlay.className = 'photo-overlay';
+
+            item.appendChild(img);
+            item.appendChild(overlay);
+            grid.appendChild(item);
+        });
+    }
+
+    // Run Immediately
+    renderPhotos();
+
     // --- 1. KONFIGURASI ALBUM (Folder Based) ---
     const albumsConfig = {
         cinematography: [
@@ -184,7 +244,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     renderAlbums(); // Execute immediately
 
-    // --- 3. ANIMATIONS & UI ---
+    // Photos rendered at start
+    // renderPhotos removed from here
+
+    // --- 4. ANIMATIONS & UI ---
 
     // Hero Animation
     const heroElements = document.querySelectorAll('.reveal-text');
