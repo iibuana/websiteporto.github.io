@@ -117,11 +117,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     "https://youtube.com/shorts/v2cWKYKMazY?feature=share", // STANDARD VIDEO (4K Nature) for testing
                     "https://youtube.com/shorts/FlMNpQ1Rku0?feature=share",
                     "https://youtube.com/shorts/97zgS5Lc9N4?feature=share",
-                    "https://youtu.be/ckeCT3sEp3Q", // STANDARD VIDEO (4K Nature) for testing
                     "https://youtube.com/shorts/4gqtaBUlTEY?feature=share",
-                    "https://youtu.be/hVQRW1wY1rI",
                     "https://youtube.com/shorts/R4XVyfdvLdI",
-                    "https://youtube.com/shorts/j5aY29AmNsg?feature=share"
+                    "https://youtube.com/shorts/j5aY29AmNsg?feature=share",
+                    "https://youtu.be/ckeCT3sEp3Q", // STANDARD VIDEO (4K Nature) for testing
+                    "https://youtu.be/hVQRW1wY1rI"
                 ]
             },
             {
