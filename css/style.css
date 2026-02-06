@@ -596,11 +596,30 @@ a:hover {
 
 @media (max-width: 600px) {
     .photo-grid {
-        column-count: 1;
+        column-count: 2;
+        /* 2 Columns for Mobile */
+        column-gap: 12px;
     }
 
     .albums-grid {
-        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        /* Smaller cards */
+        gap: 16px;
+    }
+
+    /* Mobile Video Fix */
+    .media-element {
+        height: auto !important;
+        /* Allow height to adjust */
+        aspect-ratio: 9/16;
+        /* Default vertical */
+        min-width: 70vw;
+        /* Wider cards */
+    }
+
+    .media-element.video-horizontal {
+        aspect-ratio: 16/9;
+        width: 85vw !important;
     }
 }
 

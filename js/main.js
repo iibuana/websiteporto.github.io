@@ -53,22 +53,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // Try to load images 1 to count
                 for (let i = 1; i <= cat.count; i++) {
-                    const src = `assets/images/${cat.folder}/${i}.jpg`;
+                    const baseSrc = `assets/images/${cat.folder}/${i}`;
 
                     const item = document.createElement('div');
                     item.className = 'photo-item';
                     // item.style.display = 'none'; // REMOVED: Keep display block for skeleton to work
 
                     const img = document.createElement('img');
-                    img.src = src;
                     img.alt = `${cat.title} ${i}`;
-
                     // Optimization: Load first 4 images eagerly, rest lazily
                     img.loading = (i <= 4) ? "eager" : "lazy";
 
                     // Initially hide image (opacity 0) to fade in
                     img.style.opacity = "0";
                     img.style.transition = "opacity 0.5s ease";
+
+                    // RETRY LOGIC (Case Insensitive Support)
+                    const extensions = ['.jpg', '.JPG', '.jpeg', '.JPEG', '.png', '.PNG'];
+                    let extIndex = 0;
+
+                    function tryLoad() {
+                        if (extIndex >= extensions.length) {
+                            item.remove(); // All failed
+                            return;
+                        }
+                        img.src = baseSrc + extensions[extIndex];
+                    }
 
                     // AUTO-DETECT LOGIC:
                     img.onload = function () {
@@ -79,9 +89,14 @@ document.addEventListener('DOMContentLoaded', () => {
                         item.style.backgroundColor = "transparent";
                         item.style.minHeight = "auto"; // Let image dictate height
                     };
+
                     img.onerror = function () {
-                        item.remove();
+                        extIndex++;
+                        tryLoad(); // Try next extension
                     };
+
+                    // Start Loading
+                    tryLoad();
 
                     const overlay = document.createElement('div');
                     overlay.className = 'photo-overlay';
