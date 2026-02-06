@@ -1,69 +1,39 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- 0. PHOTOGRAPHY PORTFOLIO (Album System) ---
-    const photoAlbums = {
-        "wedding": {
-            title: "Wedding Stories",
-            cover: "assets/images/wedding/1.jpg",
-            photos: [
-                { src: 'assets/images/wedding/1.jpg', category: 'Wedding' },
-                { src: 'assets/images/wedding/1.jpg', category: 'Wedding' }
-            ]
-        },
-        "portrait": {
-            title: "Portraiture",
-            cover: "assets/images/portrait/1.jpg",
-            photos: [
-                { src: 'assets/images/portrait/1.jpg', category: 'Portrait' },
-                { src: 'assets/images/portrait/1.jpg', category: 'Portrait' }
-            ]
-        },
-        "landscape": {
-            title: "Landscapes",
-            cover: "assets/images/landscape/1.jpg",
-            photos: [
-                { src: 'assets/images/landscape/1.jpg', category: 'Landscape' },
-                { src: 'assets/images/landscape/1.jpg', category: 'Landscape' }
-            ]
-        },
-        "details": {
-            title: "Details & Moments",
-            cover: "assets/images/wisuda/1.jpg",
-            photos: [
-                { src: 'assets/images/wisuda/1.jpg', category: 'Graduation' },
-            ]
-        }
+    // --- 0. PHOTOGRAPHY PORTFOLIO (Auto-Detect System) ---
+    // User checks: Just naming files 1.jpg, 2.jpg... inside the folders.
+    const albumCategories = {
+        "wedding": { title: "Wedding Stories", folder: "wedding", count: 20 },
+        "portrait": { title: "Portraiture", folder: "portrait", count: 20 },
+        "nature": { title: "Nature", folder: "landscape", count: 20 }, // Renamed from Landscape
+        "details": { title: "Details & Moments", folder: "wisuda", count: 20 }
     };
 
     function initPhotographySystem() {
-        console.log("Initializing Album System...");
+        console.log("Initializing Album System (Auto-Detect)...");
         const albumsView = document.getElementById('albums-view');
         const galleryView = document.getElementById('gallery-view');
         const grid = document.getElementById('photo-grid');
         const backBtn = document.getElementById('back-to-albums');
         const galleryTitle = document.getElementById('gallery-title');
 
-        if (!albumsView || !galleryView) {
-            console.error("Critical: Album views not found in DOM");
-            return;
-        }
+        if (!albumsView || !galleryView) return;
 
         // 1. Render Album Cards
         albumsView.innerHTML = '';
-        Object.keys(photoAlbums).forEach(key => {
-            const album = photoAlbums[key];
-            const count = album.photos.length;
+        Object.keys(albumCategories).forEach(key => {
+            const cat = albumCategories[key];
+            const coverImage = `assets/images/${cat.folder}/1.jpg`; // Always use 1.jpg as cover
 
             const card = document.createElement('div');
             card.className = 'album-card';
-            // Use closure or explicit string for onclick
             card.onclick = () => openAlbum(key);
 
             card.innerHTML = `
-                <img src="${album.cover}" class="album-cover" alt="${album.title}" loading="lazy">
+                <img src="${coverImage}" class="album-cover" alt="${cat.title}" loading="lazy">
                 <div class="album-info">
-                    <div class="album-title">${album.title}</div>
-                    <div class="album-count">${count} Photos</div>
+                    <div class="album-title">${cat.title}</div>
+                    <div class="album-count">View Gallery</div>
                 </div>
             `;
             albumsView.appendChild(card);
@@ -71,24 +41,46 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 2. Navigation Logic
         window.openAlbum = function (albumKey) {
-            const album = photoAlbums[albumKey];
-            if (!album) return;
+            const cat = albumCategories[albumKey];
+            if (!cat) return;
 
             // Update UI
-            if (galleryTitle) galleryTitle.textContent = album.title;
+            if (galleryTitle) galleryTitle.textContent = cat.title;
 
-            // Render Photos
+            // Render Photos (Auto-Generate 1 to N)
             if (grid) {
                 grid.innerHTML = '';
-                album.photos.forEach(photo => {
+
+                // Try to load images 1 to count
+                for (let i = 1; i <= cat.count; i++) {
+                    const src = `assets/images/${cat.folder}/${i}.jpg`;
+
                     const item = document.createElement('div');
                     item.className = 'photo-item';
-                    item.innerHTML = `
-                        <img src="${photo.src}" alt="${photo.category}" loading="lazy">
-                        <div class="photo-overlay"></div>
-                    `;
+                    item.style.display = 'none'; // Initially hidden
+
+                    const img = document.createElement('img');
+                    img.src = src;
+                    img.alt = `${cat.title} ${i}`;
+                    img.loading = "lazy";
+
+                    // AUTO-DETECT LOGIC:
+                    // If loads: Show it.
+                    // If fails: Remove it.
+                    img.onload = function () {
+                        item.style.display = 'block';
+                    };
+                    img.onerror = function () {
+                        item.remove();
+                    };
+
+                    const overlay = document.createElement('div');
+                    overlay.className = 'photo-overlay';
+
+                    item.appendChild(img);
+                    item.appendChild(overlay);
                     grid.appendChild(item);
-                });
+                }
             }
 
             // Switch View
