@@ -130,19 +130,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- 3. VIDEO ALBUM SYSTEM ---
     const videoAlbums = {
         "reel": {
-            title: "Cinematic Reel",
-            cover: "assets/images/wedding/1.jpg", // Fallback cover
+            title: "Reels",
+            cover: "assets/images/wedding/1.jpg",
             videos: [
                 "https://youtube.com/shorts/v2cWKYKMazY?feature=share",
                 "https://youtube.com/shorts/FlMNpQ1Rku0?feature=share",
                 "https://youtube.com/shorts/4gqtaBUlTEY?feature=share",
-                "https://youtu.be/ckeCT3sEp3Q"
-            ]
-        },
-        "wedding_film": {
-            title: "Wedding Films",
-            cover: "assets/images/wedding/1.jpg",
-            videos: [
                 "https://youtube.com/shorts/97zgS5Lc9N4?feature=share",
                 "https://youtube.com/shorts/R4XVyfdvLdI",
                 "https://youtube.com/shorts/j5aY29AmNsg?feature=share"
@@ -152,6 +145,16 @@ document.addEventListener('DOMContentLoaded', () => {
             title: "Commercial",
             cover: "assets/images/portrait/1.jpg",
             videos: ["https://youtu.be/hVQRW1wY1rI"]
+        },
+        "short_movie": {
+            title: "Short Movie",
+            cover: "assets/images/landscape/1.jpg",
+            videos: ["https://youtu.be/ckeCT3sEp3Q"]
+        },
+        "wedding": {
+            title: "Wedding",
+            cover: "assets/images/wedding/1.jpg",
+            videos: [] // Empty
         }
     };
 
@@ -199,33 +202,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (vTitle) vTitle.textContent = album.title;
             vGrid.innerHTML = '';
+            vGrid.className = 'standard-grid';
 
-            // Render Videos
-            album.videos.forEach(url => {
-                const ytId = getYouTubeId(url);
-                if (ytId) {
-                    const isShorts = url.includes('/shorts/');
-                    // Determine orientation based on URL type (assumption)
-                    // Or just use a standard card? 
-                    // Let's use the .photo-item style but for video
+            if (album.videos.length === 0) {
+                vGrid.innerHTML = '<p style="color:#888; text-align:center; width:100%; margin-top:50px; font-size:1.2rem;">Coming Soon</p>';
+            } else {
+                album.videos.forEach(url => {
+                    const ytId = getYouTubeId(url);
+                    if (ytId) {
+                        const thumbUrl = `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`;
+                        const isShorts = url.includes('/shorts/');
+                        const ratioStyle = isShorts ? 'aspect-ratio: 9/16;' : 'aspect-ratio: 16/9; width: 400px;';
 
-                    const item = document.createElement('div');
-                    item.className = 'photo-item';
-                    // Force ratio for visual consistency? 
-                    // Or let it be masonry? 
-                    // Let's assume standard vertical for shorts, horizontal for normal
+                        const item = document.createElement('div');
+                        item.className = 'video-container';
+                        item.style.cssText = ratioStyle;
+                        item.setAttribute('data-yt-id', ytId);
+                        item.setAttribute('data-thumb', thumbUrl);
 
-                    const thumbUrl = `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`;
-
-                    item.innerHTML = `
-                        <div class="video-thumbnail-container" onclick="playEmbeddedVideo(this, '${ytId}')">
-                             <img src="${thumbUrl}" alt="Video" style="width:100%; display:block;">
+                        item.innerHTML = `
+                             <img src="${thumbUrl}" alt="Video" loading="lazy">
                              <div class="play-button">▶</div>
-                        </div>
-                     `;
-                    vGrid.appendChild(item);
-                }
-            });
+                         `;
+                        item.onclick = function () { playEmbeddedVideo(this, ytId); };
+                        vGrid.appendChild(item);
+                    }
+                });
+            }
 
             vAlbumsView.classList.add('hidden');
             vGalleryView.classList.remove('hidden');
@@ -242,6 +245,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Helper to play internal video
     window.playEmbeddedVideo = function (container, ytId) {
+        // 1. Reset all other videos
+        const allVideos = document.querySelectorAll('.video-container.playing');
+        allVideos.forEach(v => {
+            if (v !== container) {
+                const oldThumb = v.getAttribute('data-thumb');
+                v.classList.remove('playing');
+                v.innerHTML = `<img src="${oldThumb}" alt="Video"><div class="play-button">▶</div>`;
+            }
+        });
+
+        // 2. Play current
+        container.classList.add('playing');
         container.innerHTML = `
             <iframe 
                 src="https://www.youtube.com/embed/${ytId}?autoplay=1&rel=0" 
@@ -249,11 +264,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 frameborder="0" 
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
                 allowfullscreen
-                style="width: 100%; aspect-ratio: 9/16; height: 100%;">
+                style="width: 100%; height: 100%;">
             </iframe>
         `;
-        // Adjust aspect ratio if it looks rectangular?
-        // Note: You might want to handle resizing via CSS
     };
 
     // Run
