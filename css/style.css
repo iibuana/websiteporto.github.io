@@ -177,6 +177,15 @@ a:hover {
         /* Stop sticky on mobile */
         top: 20px;
         width: 90%;
+        padding: 0 10px;
+        /* Reduce padding to give more internal space */
+    }
+
+    .logo {
+        font-size: 1rem;
+        /* Smaller on mobile */
+        white-space: nowrap;
+        /* Prevent wrapping */
     }
 }
 
