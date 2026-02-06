@@ -1,64 +1,115 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- 0. PHOTOGRAPHY PORTFOLIO (Masonry Grid) ---
-    const photosConfig = [
-        { src: 'assets/images/wedding/1.jpg', category: 'Wedding' },
-        { src: 'assets/images/portrait/1.jpg', category: 'Portrait' },
-        { src: 'assets/images/landscape/1.jpg', category: 'Landscape' },
-        { src: 'assets/images/wisuda/1.jpg', category: 'Graduation' },
-        { src: 'assets/images/wedding/1.jpg', category: 'Wedding' }, // Demo Duplicate
-        { src: 'assets/images/landscape/1.jpg', category: 'Landscape' } // Demo Duplicate
-    ];
+    // --- 0. PHOTOGRAPHY PORTFOLIO (Album System) ---
+    const photoAlbums = {
+        "wedding": {
+            title: "Wedding Stories",
+            cover: "assets/images/wedding/1.jpg",
+            photos: [
+                { src: 'assets/images/wedding/1.jpg', category: 'Wedding' },
+                { src: 'assets/images/wedding/1.jpg', category: 'Wedding' }
+            ]
+        },
+        "portrait": {
+            title: "Portraiture",
+            cover: "assets/images/portrait/1.jpg",
+            photos: [
+                { src: 'assets/images/portrait/1.jpg', category: 'Portrait' },
+                { src: 'assets/images/portrait/1.jpg', category: 'Portrait' }
+            ]
+        },
+        "landscape": {
+            title: "Landscapes",
+            cover: "assets/images/landscape/1.jpg",
+            photos: [
+                { src: 'assets/images/landscape/1.jpg', category: 'Landscape' },
+                { src: 'assets/images/landscape/1.jpg', category: 'Landscape' }
+            ]
+        },
+        "details": {
+            title: "Details & Moments",
+            cover: "assets/images/wisuda/1.jpg",
+            photos: [
+                { src: 'assets/images/wisuda/1.jpg', category: 'Graduation' },
+            ]
+        }
+    };
 
-    function renderPhotos() {
-        console.log("Initializing Photography Grid...");
+    function initPhotographySystem() {
+        console.log("Initializing Album System...");
+        const albumsView = document.getElementById('albums-view');
+        const galleryView = document.getElementById('gallery-view');
         const grid = document.getElementById('photo-grid');
+        const backBtn = document.getElementById('back-to-albums');
+        const galleryTitle = document.getElementById('gallery-title');
 
-        if (!grid) {
-            console.error("CRITICAL: #photo-grid element not found in HTML!");
+        if (!albumsView || !galleryView) {
+            console.error("Critical: Album views not found in DOM");
             return;
         }
 
-        // Clear previous content (if any)
-        grid.innerHTML = '';
+        // 1. Render Album Cards
+        albumsView.innerHTML = '';
+        Object.keys(photoAlbums).forEach(key => {
+            const album = photoAlbums[key];
+            const count = album.photos.length;
 
-        let loadedCount = 0;
+            const card = document.createElement('div');
+            card.className = 'album-card';
+            // Use closure or explicit string for onclick
+            card.onclick = () => openAlbum(key);
 
-        photosConfig.forEach((photo, index) => {
-            const item = document.createElement('div');
-            item.className = 'photo-item';
-
-            // Image with Fallback
-            const img = document.createElement('img');
-            img.src = photo.src;
-            img.alt = photo.category;
-            img.loading = "lazy";
-
-            // Error Handler: If image is missing, show a grey box
-            img.onerror = function () {
-                console.warn(`Image failed to load: ${photo.src}`);
-                this.style.display = 'none'; // Hide broken image
-                item.style.backgroundColor = '#333'; // Grey placeholder
-                item.style.minHeight = '200px';
-                item.innerHTML += `<span style="color:white;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)">Image Not Found</span>`;
-            };
-
-            img.onload = () => {
-                loadedCount++;
-                console.log(`Image loaded: ${photo.src} (${loadedCount}/${photosConfig.length})`);
-            };
-
-            const overlay = document.createElement('div');
-            overlay.className = 'photo-overlay';
-
-            item.appendChild(img);
-            item.appendChild(overlay);
-            grid.appendChild(item);
+            card.innerHTML = `
+                <img src="${album.cover}" class="album-cover" alt="${album.title}" loading="lazy">
+                <div class="album-info">
+                    <div class="album-title">${album.title}</div>
+                    <div class="album-count">${count} Photos</div>
+                </div>
+            `;
+            albumsView.appendChild(card);
         });
+
+        // 2. Navigation Logic
+        window.openAlbum = function (albumKey) {
+            const album = photoAlbums[albumKey];
+            if (!album) return;
+
+            // Update UI
+            if (galleryTitle) galleryTitle.textContent = album.title;
+
+            // Render Photos
+            if (grid) {
+                grid.innerHTML = '';
+                album.photos.forEach(photo => {
+                    const item = document.createElement('div');
+                    item.className = 'photo-item';
+                    item.innerHTML = `
+                        <img src="${photo.src}" alt="${photo.category}" loading="lazy">
+                        <div class="photo-overlay"></div>
+                    `;
+                    grid.appendChild(item);
+                });
+            }
+
+            // Switch View
+            albumsView.classList.add('hidden');
+            galleryView.classList.remove('hidden');
+
+            // Scroll
+            const section = document.getElementById('photography');
+            if (section) section.scrollIntoView({ behavior: 'smooth' });
+        };
+
+        if (backBtn) {
+            backBtn.onclick = () => {
+                galleryView.classList.add('hidden');
+                albumsView.classList.remove('hidden');
+            };
+        }
     }
 
     // Run Immediately
-    renderPhotos();
+    initPhotographySystem();
 
     // --- 1. KONFIGURASI ALBUM (Folder Based) ---
     const albumsConfig = {
