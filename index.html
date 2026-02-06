@@ -106,9 +106,29 @@
                 <p class="section-desc reveal-on-scroll delay-1">Motion and emotion.</p>
             </div>
 
-            <!-- Horizontal Scroller -->
-            <div class="media-scroller snaps-inline reveal-on-scroll" id="video-scroller">
-                <!-- Items will be injected here by JS -->
+            <!-- VIEW 1: VIDEO ALBUMS LIST -->
+            <div id="video-albums-view" class="albums-grid">
+                <!-- Video Album Cards injected by JS -->
+            </div>
+
+            <!-- VIEW 2: VIDEO GALLERY DETAIL (Hidden by default) -->
+            <div id="video-gallery-view" class="hidden">
+                <div class="gallery-nav">
+                    <button id="back-to-video-albums" class="nav-back-btn">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="19" y1="12" x2="5" y2="12"></line>
+                            <polyline points="12 19 5 12 12 5"></polyline>
+                        </svg>
+                        Back to Folders
+                    </button>
+                    <h3 id="video-gallery-title">Album Name</h3>
+                </div>
+
+                <!-- Masonry Grid for Videos -->
+                <div class="photo-grid" id="video-grid">
+                    <!-- Video Thumbnails injected by JS -->
+                </div>
             </div>
         </div>
     </section>
