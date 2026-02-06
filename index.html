@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio | Cinematographer</title>
+    <title>Portfolio | Ii Buana</title>
     <meta name="description" content="Portfolio of a Visual Artist - Cinematography & Videography">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -71,9 +71,29 @@
                 <p class="section-desc reveal-on-scroll delay-1">Stills & Moments.</p>
             </div>
 
-            <!-- Masonry Grid -->
-            <div class="photo-grid" id="photo-grid">
-                <!-- Photos injected by JS -->
+            <!-- VIEW 1: ALBUMS LIST -->
+            <div id="albums-view" class="albums-grid">
+                <!-- Album Cards injected by JS -->
+            </div>
+
+            <!-- VIEW 2: GALLERY DETAIL (Hidden by default) -->
+            <div id="gallery-view" class="hidden">
+                <div class="gallery-nav">
+                    <button id="back-to-albums" class="nav-back-btn">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="19" y1="12" x2="5" y2="12"></line>
+                            <polyline points="12 19 5 12 12 5"></polyline>
+                        </svg>
+                        Back to Albums
+                    </button>
+                    <h3 id="gallery-title">Album Name</h3>
+                </div>
+
+                <!-- Masonry Grid -->
+                <div class="photo-grid" id="photo-grid">
+                    <!-- Photos injected by JS -->
+                </div>
             </div>
         </div>
     </section>
