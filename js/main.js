@@ -127,189 +127,137 @@ document.addEventListener('DOMContentLoaded', () => {
     // Run Immediately
     initPhotographySystem();
 
-    // --- 1. KONFIGURASI ALBUM (Folder Based) ---
-    const albumsConfig = {
-        cinematography: [
-            {
-                title: "Cinematic Reel",
-                subtitle: "Short Social Media Content",
-                folder: "reel",
-                // Use an existing image folder for poster fallback
-                poster: "assets/images/wedding/1.jpg",
-                // YOUTUBE VIDEOS (Use "youtube:" prefix or just ID)
-                videos: [
-                    "https://youtube.com/shorts/v2cWKYKMazY?feature=share", // STANDARD VIDEO (4K Nature) for testing
-                    "https://youtube.com/shorts/FlMNpQ1Rku0?feature=share",
-                    "https://youtube.com/shorts/4gqtaBUlTEY?feature=share",
-                    "https://youtube.com/shorts/97zgS5Lc9N4?feature=share",
-                    "https://youtube.com/shorts/R4XVyfdvLdI",
-                    "https://youtube.com/shorts/j5aY29AmNsg?feature=share",
-                    "https://youtu.be/ckeCT3sEp3Q", // STANDARD VIDEO (4K Nature) for testing
-                    "https://youtu.be/hVQRW1wY1rI"
-                ]
-            },
-            {
-                title: "Wedding Film",
-                subtitle: "Eternal Love",
-                folder: "wedding_film",
-                poster: "assets/images/wedding/1.jpg"
-            },
-            {
-                title: "Commercial",
-                subtitle: "Brand Campaign",
-                folder: "commercial",
-                poster: "assets/images/portrait/1.jpg"
-
-            },
-            {
-                title: "Short Film",
-                subtitle: "Short Film",
-                folder: "documentary",
-                poster: "assets/images/landscape/1.jpg"
-
-            }
-        ],    /* 
-       CARA MENGGUNAKAN VIDEO GOOGLE DRIVE / LINK EKSTERNAL:
-       Tambahkan property 'videos' berisi array link videonya secara manual.
-       Contoh:
-       {
-           title: "My Drive Video",
-           subtitle: "Hosted on Drive",
-           folder: "ignored", 
-           poster: "assets/images/cover.jpg",
-           videos: [
-               "https://drive.google.com/uc?export=download&id=FULL_VIDEO_ID_HERE",
-               "https://drive.google.com/uc?export=download&id=ANOTHER_VIDEO_ID"
-           ]
-       }
-    */
+    // --- 3. VIDEO ALBUM SYSTEM ---
+    const videoAlbums = {
+        "reel": {
+            title: "Cinematic Reel",
+            cover: "assets/images/wedding/1.jpg", // Fallback cover
+            videos: [
+                "https://youtube.com/shorts/v2cWKYKMazY?feature=share",
+                "https://youtube.com/shorts/FlMNpQ1Rku0?feature=share",
+                "https://youtube.com/shorts/4gqtaBUlTEY?feature=share",
+                "https://youtu.be/ckeCT3sEp3Q"
+            ]
+        },
+        "wedding_film": {
+            title: "Wedding Films",
+            cover: "assets/images/wedding/1.jpg",
+            videos: [
+                "https://youtube.com/shorts/97zgS5Lc9N4?feature=share",
+                "https://youtube.com/shorts/R4XVyfdvLdI",
+                "https://youtube.com/shorts/j5aY29AmNsg?feature=share"
+            ]
+        },
+        "commercial": {
+            title: "Commercial",
+            cover: "assets/images/portrait/1.jpg",
+            videos: ["https://youtu.be/hVQRW1wY1rI"]
+        }
     };
 
-    // --- 1.5 HELPER FUNCTIONS ---
-    // Helper: Check if video exists by trying to load it
-    // Helper: Check if video exists by trying to load it
-    // Helper: Check if video exists
-    // HYBRID STRATEGY: Use fetch() for Web (faster), fallback to Video Element for Local (file://)
-    function checkVideoExists(url) {
-        return new Promise((resolve) => {
-            // Strategy A: HTTP/HTTPS (GitHub Pages, Server)
-            if (window.location.protocol.startsWith('http')) {
-                fetch(url, { method: 'HEAD' })
-                    .then(res => {
-                        if (res.ok) resolve(true);
-                        else resolve(false);
-                    })
-                    .catch(() => {
-                        // If fetch fails (CORS etc), try fallback
-                        checkVideoFallback(url).then(resolve);
-                    });
-            } else {
-                // Strategy B: Local File System (file://)
-                checkVideoFallback(url).then(resolve);
+    function initVideoSystem() {
+        console.log("Initializing Video System...");
+        const vAlbumsView = document.getElementById('video-albums-view');
+        const vGalleryView = document.getElementById('video-gallery-view');
+        const vGrid = document.getElementById('video-grid');
+        const vBackBtn = document.getElementById('back-to-video-albums');
+        const vTitle = document.getElementById('video-gallery-title');
+
+        if (!vAlbumsView || !vGalleryView) return;
+
+        // Render Albums
+        vAlbumsView.innerHTML = '';
+        Object.keys(videoAlbums).forEach(key => {
+            const album = videoAlbums[key];
+            const count = album.videos.length;
+
+            // Get Thumbnail of FIRST video as Cover (if youtube)
+            let coverImg = album.cover;
+            if (album.videos.length > 0) {
+                const ytId = getYouTubeId(album.videos[0]);
+                if (ytId) coverImg = `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`;
             }
-        });
-    }
 
-    // Classic Video Element Method (Reliable for local files, but needs timeout)
-    function checkVideoFallback(url) {
-        return new Promise((resolve) => {
-            const video = document.createElement('video');
-            video.preload = 'metadata';
-            video.src = url;
-            video.onloadedmetadata = () => resolve(true);
-            video.onerror = () => resolve(false);
-            // Longer timeout for safety
-            setTimeout(() => {
-                video.src = "";
-                resolve(false);
-            }, 5000);
-        });
-    }
+            const card = document.createElement('div');
+            card.className = 'album-card';
+            card.onclick = () => openVideoAlbum(key);
 
-    // --- 2. GENERATE HTML (Render Albums) ---
-    // --- 2. GENERATE HTML (Render Albums) ---
-    // --- 2. GENERATE HTML (Render Albums) ---
-    function renderAlbums() {
-        const videoContainer = document.getElementById('video-scroller');
-        if (!videoContainer) return;
-
-        videoContainer.innerHTML = ''; // Clear existing
-
-        // Check availability
-        if (!albumsConfig || !albumsConfig.cinematography) return;
-
-        // Loop through ALBUMS
-        albumsConfig.cinematography.forEach(album => {
-            // Loop through VIDEOS in the album
-            if (album.videos && album.videos.length > 0) {
-                album.videos.forEach((videoUrl, index) => {
-                    const ytId = getYouTubeId(videoUrl);
-                    if (ytId) {
-                        const isShorts = videoUrl.includes('/shorts/');
-                        const orientationClass = isShorts ? 'video-vertical' : 'video-horizontal';
-                        const thumbUrl = `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`;
-
-                        // Create Card Container
-                        const card = document.createElement('div');
-                        card.className = `media-element ${orientationClass}`;
-                        card.setAttribute('data-yt-id', ytId);
-                        card.setAttribute('data-thumb', thumbUrl);
-                        card.setAttribute('onclick', 'playVideo(this)');
-
-                        // Initial Content: Thumbnail + Play Button
-                        card.innerHTML = `
-                            <div class="video-thumbnail" style="background-image: url('${thumbUrl}')"></div>
-                            <div class="play-overlay">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="white">
-                                    <path d="M8 5v14l11-7z"/>
-                                </svg>
-                            </div>
-                         `;
-
-                        videoContainer.appendChild(card);
-                    }
-                });
-            }
-        });
-    }
-
-    // Global function for click handler
-    window.playVideo = function (card) {
-        const ytId = card.getAttribute('data-yt-id');
-        const isPlaying = card.classList.contains('video-playing');
-
-        // 1. Reset ANY currently playing video
-        const currentPlaying = document.querySelector('.media-element.video-playing');
-        if (currentPlaying && currentPlaying !== card) {
-            const oldThumb = currentPlaying.getAttribute('data-thumb');
-            currentPlaying.classList.remove('video-playing');
-            currentPlaying.innerHTML = `
-                <div class="video-thumbnail" style="background-image: url('${oldThumb}')"></div>
-                <div class="play-overlay">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="white">
-                        <path d="M8 5v14l11-7z"/>
-                    </svg>
+            card.innerHTML = `
+                <img src="${coverImg}" class="album-cover" alt="${album.title}" loading="lazy">
+                <div class="album-info">
+                    <div class="album-title">${album.title}</div>
+                    <div class="album-count">${count} Videos</div>
                 </div>
             `;
-        }
+            vAlbumsView.appendChild(card);
+        });
 
-        // 2. Play THIS video (if not already playing)
-        if (!isPlaying) {
-            card.classList.add('video-playing');
-            card.innerHTML = `
-                <iframe 
-                    src="https://www.youtube.com/embed/${ytId}?autoplay=1&controls=1&rel=0&playsinline=1" 
-                    title="YouTube video player" 
-                    frameborder="0" 
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                    allowfullscreen
-                    style="width: 100%; height: 100%; border: none;">
-                </iframe>
-            `;
+        // Open Album Logic
+        window.openVideoAlbum = function (key) {
+            const album = videoAlbums[key];
+            if (!album) return;
+
+            if (vTitle) vTitle.textContent = album.title;
+            vGrid.innerHTML = '';
+
+            // Render Videos
+            album.videos.forEach(url => {
+                const ytId = getYouTubeId(url);
+                if (ytId) {
+                    const isShorts = url.includes('/shorts/');
+                    // Determine orientation based on URL type (assumption)
+                    // Or just use a standard card? 
+                    // Let's use the .photo-item style but for video
+
+                    const item = document.createElement('div');
+                    item.className = 'photo-item';
+                    // Force ratio for visual consistency? 
+                    // Or let it be masonry? 
+                    // Let's assume standard vertical for shorts, horizontal for normal
+
+                    const thumbUrl = `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`;
+
+                    item.innerHTML = `
+                        <div class="video-thumbnail-container" onclick="playEmbeddedVideo(this, '${ytId}')">
+                             <img src="${thumbUrl}" alt="Video" style="width:100%; display:block;">
+                             <div class="play-button">▶</div>
+                        </div>
+                     `;
+                    vGrid.appendChild(item);
+                }
+            });
+
+            vAlbumsView.classList.add('hidden');
+            vGalleryView.classList.remove('hidden');
+        };
+
+        if (vBackBtn) {
+            vBackBtn.onclick = () => {
+                vGrid.innerHTML = ''; // Stop videos
+                vGalleryView.classList.add('hidden');
+                vAlbumsView.classList.remove('hidden');
+            };
         }
+    }
+
+    // Helper to play internal video
+    window.playEmbeddedVideo = function (container, ytId) {
+        container.innerHTML = `
+            <iframe 
+                src="https://www.youtube.com/embed/${ytId}?autoplay=1&rel=0" 
+                title="YouTube video player" 
+                frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                allowfullscreen
+                style="width: 100%; aspect-ratio: 9/16; height: 100%;">
+            </iframe>
+        `;
+        // Adjust aspect ratio if it looks rectangular?
+        // Note: You might want to handle resizing via CSS
     };
 
-    renderAlbums(); // Execute immediately
+    // Run
+    initVideoSystem();
 
     // Photos rendered at start
     // renderPhotos removed from here
