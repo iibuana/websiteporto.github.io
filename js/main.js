@@ -133,23 +133,27 @@ document.addEventListener('DOMContentLoaded', () => {
             title: "Reels",
             cover: "assets/images/wedding/1.jpg",
             videos: [
+                "https://youtube.com/shorts/97zgS5Lc9N4?feature=share",
                 "https://youtube.com/shorts/v2cWKYKMazY?feature=share",
                 "https://youtube.com/shorts/FlMNpQ1Rku0?feature=share",
-                "https://youtube.com/shorts/4gqtaBUlTEY?feature=share",
-                "https://youtube.com/shorts/97zgS5Lc9N4?feature=share",
-                "https://youtube.com/shorts/R4XVyfdvLdI",
-                "https://youtube.com/shorts/j5aY29AmNsg?feature=share"
+                "https://youtube.com/shorts/4gqtaBUlTEY?feature=share"
             ]
         },
         "commercial": {
             title: "Commercial",
             cover: "assets/images/portrait/1.jpg",
-            videos: ["https://youtu.be/hVQRW1wY1rI"]
+            videos: [
+                "https://youtube.com/shorts/j5aY29AmNsg?feature=share",
+                "https://youtube.com/shorts/R4XVyfdvLdI"
+            ]
         },
         "short_movie": {
             title: "Short Movie",
             cover: "assets/images/landscape/1.jpg",
-            videos: ["https://youtu.be/ckeCT3sEp3Q"]
+            videos: [
+                "https://youtu.be/hVQRW1wY1rI",
+                "https://youtu.be/ckeCT3sEp3Q"
+            ]
         },
         "wedding": {
             title: "Wedding",
@@ -174,24 +178,39 @@ document.addEventListener('DOMContentLoaded', () => {
             const album = videoAlbums[key];
             const count = album.videos.length;
 
-            // Get Thumbnail of FIRST video as Cover (if youtube)
-            let coverImg = album.cover;
-            if (album.videos.length > 0) {
-                const ytId = getYouTubeId(album.videos[0]);
-                if (ytId) coverImg = `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`;
+            // Render Card Content
+            let cardContent;
+            if (count === 0) {
+                // EMPTY ALBUM STYLE
+                cardContent = `
+                    <div class="album-cover" style="display:flex; justify-content:center; align-items:center; background:#1a1a1a; color:#888; font-size:1.2rem; font-weight:500;">
+                        Coming Soon
+                    </div>
+                    <div class="album-info">
+                        <div class="album-title">${album.title}</div>
+                        <div class="album-count">Coming Soon</div>
+                    </div>
+                 `;
+            } else {
+                // STANDARD IMAGE STYLE
+                let coverImg = album.cover;
+                if (album.videos.length > 0) {
+                    const ytId = getYouTubeId(album.videos[0]);
+                    if (ytId) coverImg = `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`;
+                }
+                cardContent = `
+                    <img src="${coverImg}" class="album-cover" alt="${album.title}" loading="lazy">
+                    <div class="album-info">
+                        <div class="album-title">${album.title}</div>
+                        <div class="album-count">${count} Videos</div>
+                    </div>
+                `;
             }
 
             const card = document.createElement('div');
             card.className = 'album-card';
             card.onclick = () => openVideoAlbum(key);
-
-            card.innerHTML = `
-                <img src="${coverImg}" class="album-cover" alt="${album.title}" loading="lazy">
-                <div class="album-info">
-                    <div class="album-title">${album.title}</div>
-                    <div class="album-count">${count} Videos</div>
-                </div>
-            `;
+            card.innerHTML = cardContent;
             vAlbumsView.appendChild(card);
         });
 
