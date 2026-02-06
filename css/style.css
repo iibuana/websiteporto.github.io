@@ -182,10 +182,27 @@ a:hover {
     }
 
     .logo {
-        font-size: 1rem;
-        /* Smaller on mobile */
-        white-space: nowrap;
-        /* Prevent wrapping */
+        display: none;
+    }
+
+    .nav-content {
+        justify-content: center;
+        padding: 0 10px;
+    }
+
+    .nav-content {
+        padding: 0 10px;
+        /* Reduce side padding */
+    }
+
+    .nav-links {
+        gap: 12px;
+        /* Reduce gap between links significantly */
+    }
+
+    .nav-links a {
+        font-size: 0.85rem;
+        /* Slightly smaller links */
     }
 }
 
@@ -657,6 +674,9 @@ a:hover {
 
 .email-link {
     display: block;
+    width: 100%;
+    text-align: center;
+    /* Force center */
     font-size: clamp(2rem, 5vw, 4rem);
     font-weight: 700;
     margin: var(--spacing-md) 0;
