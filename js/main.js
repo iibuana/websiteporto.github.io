@@ -3,10 +3,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- 0. PHOTOGRAPHY PORTFOLIO (Auto-Detect System) ---
     // User checks: Just naming files 1.jpg, 2.jpg... inside the folders.
     const albumCategories = {
-        "wedding": { title: "Wedding Stories", folder: "wedding", count: 20 },
         "portrait": { title: "Portraiture", folder: "portrait", count: 20 },
         "nature": { title: "Nature", folder: "landscape", count: 20 }, // Renamed from Landscape
-        "details": { title: "Details & Moments", folder: "wisuda", count: 20 }
+        "details": { title: "Details & Moments", folder: "wisuda", count: 20 },
+        "wedding": { title: "Wedding Stories", folder: "wedding", count: 20 }
     };
 
     function initPhotographySystem() {
