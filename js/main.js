@@ -344,4 +344,40 @@ document.addEventListener('DOMContentLoaded', () => {
         return (match && match[2].length === 11) ? match[2] : null;
     }
 
+    // --- GEAR PAGE LOGIC ---
+    function openGear(e) {
+        if (e) e.preventDefault();
+
+        // Hide main sections
+        document.getElementById('home').style.display = 'none';
+        document.getElementById('photography').style.display = 'none'; // Added
+        document.getElementById('work').style.display = 'none';
+        document.getElementById('about').style.display = 'none';
+        document.getElementById('contact').style.display = 'none';
+
+        // Show Gear
+        const gearSection = document.getElementById('gear-view');
+        gearSection.classList.remove('hidden');
+        window.scrollTo(0, 0);
+    }
+
+    function closeGear() {
+        // Hide Gear
+        const gearSection = document.getElementById('gear-view');
+        gearSection.classList.add('hidden');
+
+        // Show main sections
+        document.getElementById('home').style.display = 'flex'; // Hero is flex
+        document.getElementById('photography').style.display = 'block'; // Added
+        document.getElementById('work').style.display = 'block';
+        document.getElementById('about').style.display = 'block';
+        document.getElementById('contact').style.display = 'block';
+
+        window.scrollTo(0, 0);
+    }
+
+    // Attach to window so HTML onclick works
+    window.openGear = openGear;
+    window.closeGear = closeGear;
+
 });

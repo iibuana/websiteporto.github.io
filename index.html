@@ -22,6 +22,7 @@
                 <li><a href="#photography">Work</a></li>
                 <li><a href="#about">About</a></li>
                 <li><a href="#contact">Contact</a></li>
+                <li><a href="#" onclick="openGear(event)">Gear</a></li>
                 <li>
                     <button id="theme-toggle" aria-label="Toggle Dark Mode"
                         style="background:none; border:none; cursor:pointer; color:inherit; display:flex; align-items:center;">
@@ -50,6 +51,45 @@
             </ul>
         </div>
     </nav>
+
+    <!-- Gear Section (Hidden by default, acts as a page) -->
+    <section id="gear-view" class="gear-section hidden">
+        <div class="container fluid-container">
+            <div class="gallery-nav">
+                <button onclick="closeGear()" class="nav-back-btn">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="19" y1="12" x2="5" y2="12"></line>
+                        <polyline points="12 19 5 12 12 5"></polyline>
+                    </svg>
+                    Back to Home
+                </button>
+                <h3>My Gear</h3>
+            </div>
+
+            <div class="gear-grid">
+                <!-- Camera Body -->
+                <div class="gear-card">
+                    <div class="gear-icon">📷</div>
+                    <h4>Cameras</h4>
+                    <ul>
+                        <li>Sony A7R III</li>
+                        <li>Sony ZV E10</li>
+                    </ul>
+                </div>
+                <!-- Lenses -->
+                <div class="gear-card">
+                    <div class="gear-icon">🔍</div>
+                    <h4>Lenses</h4>
+                    <ul>
+                        <li>Sony 16-50mm f/3.5-5.6</li>
+                        <li>Canon 50mm f/1.8</li>
+                        <li>viltrox 20mm f/2.8</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- Hero Section -->
     <header class="hero" id="home">
