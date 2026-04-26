@@ -155,9 +155,9 @@ a:hover {
     );
     background-color: rgba(20, 20, 20, 0.15); /* More transparent for better refraction */
     
-    /* Refractive Material */
-    backdrop-filter: blur(40px) saturate(200%) url(#liquid-glass);
-    -webkit-backdrop-filter: blur(40px) saturate(200%) url(#liquid-glass);
+    /* Refractive Material - Optimized for Safari */
+    backdrop-filter: url(#liquid-glass) saturate(250%);
+    -webkit-backdrop-filter: url(#liquid-glass) saturate(250%);
 
     z-index: 1000;
 
