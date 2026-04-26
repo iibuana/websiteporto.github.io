@@ -183,6 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Render Albums
         vAlbumsView.innerHTML = '';
+        console.log("Video Albums:", Object.keys(videoAlbums));
         Object.keys(videoAlbums).forEach(key => {
             const album = videoAlbums[key];
             const count = album.videos.length;
