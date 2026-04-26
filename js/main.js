@@ -292,7 +292,7 @@ document.addEventListener('DOMContentLoaded', () => {
         container.classList.add('playing');
         container.innerHTML = `
             <iframe 
-                src="https://www.youtube.com/embed/${ytId}?autoplay=1&mute=1&loop=1&playlist=${ytId}&rel=0" 
+                src="https://www.youtube.com/embed/${ytId}?autoplay=1&loop=1&playlist=${ytId}&rel=0" 
                 title="YouTube video player" 
                 frameborder="0" 
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
