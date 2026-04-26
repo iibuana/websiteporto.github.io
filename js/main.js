@@ -22,7 +22,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 1. Render Album Cards
         albumsView.innerHTML = '';
-        console.log("Album Categories:", Object.keys(albumCategories));
         Object.keys(albumCategories).forEach(key => {
             const cat = albumCategories[key];
             const coverImage = `assets/images/${cat.folder}/1.jpg`; // Always use 1.jpg as cover
