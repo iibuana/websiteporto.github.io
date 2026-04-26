@@ -384,4 +384,14 @@ document.addEventListener('DOMContentLoaded', () => {
     window.openGear = openGear;
     window.closeGear = closeGear;
 
+    // Auto-close gear when clicking main nav links
+    document.querySelectorAll('.nav-links a').forEach(link => {
+        link.addEventListener('click', (e) => {
+            // If the link is NOT the Gear link, close the gear view
+            if (!link.getAttribute('onclick')?.includes('openGear')) {
+                closeGear();
+            }
+        });
+    });
+
 });
