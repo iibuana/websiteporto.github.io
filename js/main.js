@@ -163,6 +163,16 @@ document.addEventListener('DOMContentLoaded', () => {
             videos: [
                 "https://youtu.be/sBqalWo-Xs8"
             ]
+        },
+        "postcard": {
+            title: "Postcard",
+            cover: "assets/images/portrait/1.jpg",
+            videos: [
+                "https://youtu.be/GODWcjT0qL4",
+                "https://youtu.be/320Y53lAVRI",
+                "https://youtu.be/hnRqF-M1AB0",
+                "https://youtu.be/YxLzg1cGRUs"
+            ]
         }
     };
 
