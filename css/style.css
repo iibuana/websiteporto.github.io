@@ -150,9 +150,9 @@ a:hover {
     /* Refractive Glass Effect */
     background: rgba(15, 15, 15, 0.35);
     
-    /* Liquid Glass & Chromatic Aberration Simulation */
-    backdrop-filter: blur(16px) saturate(1.2) brightness(1.1);
-    -webkit-backdrop-filter: blur(16px) saturate(1.2) brightness(1.1);
+    /* Liquid Glass & Chromatic Aberration via Backdrop Filter */
+    backdrop-filter: blur(16px) saturate(1.2) brightness(1.1) url(#liquid-glass);
+    -webkit-backdrop-filter: blur(16px) saturate(1.2) brightness(1.1) url(#liquid-glass);
 
     z-index: 1000;
 
@@ -212,7 +212,7 @@ a:hover {
     justify-content: space-between;
     align-items: center;
     padding: 0 var(--spacing-md);
-    filter: url(#liquid-glass); /* Subtle distortion */
+    /* Removed distortion from text */
 }
 
 .logo {
