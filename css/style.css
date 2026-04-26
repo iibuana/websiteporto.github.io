@@ -150,9 +150,10 @@ a:hover {
     /* Refractive Glass Effect */
     background: rgba(15, 15, 15, 0.35);
     
-    /* Liquid Glass & Chromatic Aberration via Backdrop Filter */
-    backdrop-filter: blur(16px) saturate(1.2) brightness(1.1) url(#liquid-glass);
-    -webkit-backdrop-filter: blur(16px) saturate(1.2) brightness(1.1) url(#liquid-glass);
+    /* High-Quality Apple Liquid Glass Style */
+    background: rgba(15, 15, 15, 0.4);
+    backdrop-filter: blur(25px) saturate(200%) brightness(1.1);
+    -webkit-backdrop-filter: blur(25px) saturate(200%) brightness(1.1);
 
     z-index: 1000;
 
@@ -163,10 +164,39 @@ a:hover {
     display: flex;
     justify-content: center;
 
-    /* Depth Shadows */
+    /* Premium Shadows & Rims */
     box-shadow:
-        0 20px 40px -10px rgba(0, 0, 0, 0.5),
-        inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+        0 25px 50px -12px rgba(0, 0, 0, 0.5),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+    
+    position: relative;
+    overflow: hidden;
+}
+
+/* Chromatic Aberration Fringes */
+.navbar::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, 
+        rgba(255, 0, 0, 0.05) 0%, 
+        transparent 5%, 
+        transparent 95%, 
+        rgba(0, 255, 255, 0.05) 100%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* Liquid Texture / Noise Overlay */
+.navbar::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    opacity: 0.04;
+    mix-blend-mode: overlay;
+    pointer-events: none;
+    z-index: -1;
 }
 
 @media (max-width: 768px) {
