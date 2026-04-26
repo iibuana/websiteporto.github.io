@@ -157,11 +157,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 "https://youtu.be/cR263dC0dLU"
             ]
         },
-        "wedding": {
-            title: "Wedding",
-            cover: "assets/images/wedding/1.jpg",
-            videos: [] // Empty
-        },
         "visual_projects": {
             title: "Visual Projects",
             cover: "assets/images/landscape/1.jpg", // Placeholder cover
@@ -183,7 +178,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Render Albums
         vAlbumsView.innerHTML = '';
-        console.log("Video Albums:", Object.keys(videoAlbums));
         Object.keys(videoAlbums).forEach(key => {
             const album = videoAlbums[key];
             const count = album.videos.length;
