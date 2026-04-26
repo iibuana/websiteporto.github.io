@@ -152,7 +152,8 @@ document.addEventListener('DOMContentLoaded', () => {
             cover: "assets/images/landscape/1.jpg",
             videos: [
                 "https://youtu.be/rg-My15bSfk",
-                "https://youtu.be/0E5aTVfEwcU"
+                "https://youtu.be/0E5aTVfEwcU",
+                "https://youtu.be/cR263dC0dLU"
             ]
         },
         "wedding": {
