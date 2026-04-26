@@ -161,6 +161,13 @@ document.addEventListener('DOMContentLoaded', () => {
             title: "Wedding",
             cover: "assets/images/wedding/1.jpg",
             videos: [] // Empty
+        },
+        "visual_projects": {
+            title: "Visual Projects",
+            cover: "assets/images/landscape/1.jpg", // Placeholder cover
+            videos: [
+                "https://youtu.be/sBqalWo-Xs8"
+            ]
         }
     };
 
