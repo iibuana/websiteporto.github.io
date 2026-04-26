@@ -150,10 +150,10 @@ a:hover {
     /* Refractive Glass Effect */
     background: rgba(15, 15, 15, 0.35);
     
-    /* High-Quality Apple Liquid Glass Style */
-    background: rgba(15, 15, 15, 0.4);
-    backdrop-filter: blur(25px) saturate(200%) brightness(1.1);
-    -webkit-backdrop-filter: blur(25px) saturate(200%) brightness(1.1);
+    /* Ultra Refractive Liquid Glass */
+    background: rgba(15, 15, 15, 0.25);
+    backdrop-filter: blur(8px) url(#liquid-glass) saturate(1.5);
+    -webkit-backdrop-filter: blur(8px) url(#liquid-glass) saturate(1.5);
 
     z-index: 1000;
 
