@@ -147,23 +147,23 @@ a:hover {
     max-width: var(--max-width);
     height: var(--nav-height);
 
-    /* Apple Liquid Glass Material (Menus & Toolbars) */
+    /* Apple Material Design (HIG Toolbars) */
     background: linear-gradient(180deg, 
-        rgba(255, 255, 255, 0.15) 0%, 
-        rgba(255, 255, 255, 0.05) 50%, 
-        rgba(0, 0, 0, 0.1) 100%
+        rgba(255, 255, 255, 0.08) 0%, 
+        rgba(255, 255, 255, 0.03) 50%, 
+        rgba(0, 0, 0, 0.05) 100%
     );
-    background-color: rgba(15, 15, 15, 0.2);
+    background-color: rgba(20, 20, 20, 0.15); /* More transparent for better refraction */
     
     /* Refractive Material */
-    backdrop-filter: blur(20px) saturate(180%) url(#liquid-glass);
-    -webkit-backdrop-filter: blur(20px) saturate(180%) url(#liquid-glass);
+    backdrop-filter: blur(25px) saturate(200%) url(#liquid-glass);
+    -webkit-backdrop-filter: blur(25px) saturate(200%) url(#liquid-glass);
 
     z-index: 1000;
 
-    /* Capsule Shape & Glass Rim */
-    border: 0.5px solid rgba(255, 255, 255, 0.25);
-    border-radius: 999px; /* Capsule shape */
+    /* Capsule Shape & Precision Rim */
+    border: 0.5px solid rgba(255, 255, 255, 0.15);
+    border-radius: 999px;
 
     display: flex;
     justify-content: center;
@@ -177,31 +177,18 @@ a:hover {
     overflow: visible; /* Allow filters to overflow if needed */
 }
 
-/* Internal Shine for Liquid Look */
-.navbar::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 10%;
-    right: 10%;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-    pointer-events: none;
-    z-index: 1;
-}
-
-/* Chromatic Aberration Fringes */
+/* Combined Specular & Aberration Overlay */
 .navbar::before {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(90deg, 
-        rgba(255, 0, 0, 0.05) 0%, 
-        transparent 5%, 
-        transparent 95%, 
-        rgba(0, 255, 255, 0.05) 100%);
+    border-radius: 999px;
+    /* Top Shine */
+    background: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, transparent 40%),
+                /* Chromatic Fringes */
+                linear-gradient(90deg, rgba(255, 0, 0, 0.03) 0%, transparent 10%, transparent 90%, rgba(0, 255, 255, 0.03) 100%);
     pointer-events: none;
-    z-index: -1;
+    z-index: 1;
 }
 
 /* Liquid Texture / Noise Overlay */
