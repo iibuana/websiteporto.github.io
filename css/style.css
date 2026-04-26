@@ -147,30 +147,47 @@ a:hover {
     max-width: var(--max-width);
     height: var(--nav-height);
 
-    /* Refractive Glass Effect */
-    background: rgba(15, 15, 15, 0.35);
+    /* Apple Liquid Glass Material (Menus & Toolbars) */
+    background: linear-gradient(180deg, 
+        rgba(255, 255, 255, 0.15) 0%, 
+        rgba(255, 255, 255, 0.05) 50%, 
+        rgba(0, 0, 0, 0.1) 100%
+    );
+    background-color: rgba(15, 15, 15, 0.2);
     
-    /* Ultra Refractive Liquid Glass */
-    background: rgba(15, 15, 15, 0.25);
-    backdrop-filter: blur(20px) url(#liquid-glass) saturate(1.5);
-    -webkit-backdrop-filter: blur(20px) url(#liquid-glass) saturate(1.5);
+    /* Refractive Material */
+    backdrop-filter: blur(20px) saturate(180%) url(#liquid-glass);
+    -webkit-backdrop-filter: blur(20px) saturate(180%) url(#liquid-glass);
 
     z-index: 1000;
 
-    /* Subtle borders */
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 24px;
+    /* Capsule Shape & Glass Rim */
+    border: 0.5px solid rgba(255, 255, 255, 0.25);
+    border-radius: 999px; /* Capsule shape */
 
     display: flex;
     justify-content: center;
 
-    /* Premium Shadows & Rims */
+    /* Depth & Specular Shadows */
     box-shadow:
-        0 25px 50px -12px rgba(0, 0, 0, 0.5),
-        inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+        0 4px 24px -1px rgba(0, 0, 0, 0.4),
+        0 1px 2px 0 rgba(255, 255, 255, 0.1) inset, /* Top Shine */
+        0 -1px 2px 0 rgba(0, 0, 0, 0.2) inset;    /* Bottom Depth */
     
-    /* Support for pseudo-elements */
-    overflow: hidden;
+    overflow: visible; /* Allow filters to overflow if needed */
+}
+
+/* Internal Shine for Liquid Look */
+.navbar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 10%;
+    right: 10%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    pointer-events: none;
+    z-index: 1;
 }
 
 /* Chromatic Aberration Fringes */
@@ -192,8 +209,9 @@ a:hover {
     content: '';
     position: absolute;
     inset: 0;
+    border-radius: 999px;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-    opacity: 0.04;
+    opacity: 0.03;
     mix-blend-mode: overlay;
     pointer-events: none;
     z-index: -1;
