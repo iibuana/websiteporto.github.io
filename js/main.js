@@ -151,8 +151,8 @@ document.addEventListener('DOMContentLoaded', () => {
             title: "Short Movie",
             cover: "assets/images/landscape/1.jpg",
             videos: [
-                "https://youtu.be/hVQRW1wY1rI",
-                "https://youtu.be/ckeCT3sEp3Q"
+                "https://youtu.be/rg-My15bSfk",
+                "https://youtu.be/0E5aTVfEwcU"
             ]
         },
         "wedding": {
