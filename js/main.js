@@ -6,7 +6,8 @@ document.addEventListener('DOMContentLoaded', () => {
         "portrait": { title: "Portraiture", folder: "portrait", count: 20 },
         "nature": { title: "Nature", folder: "landscape", count: 20 }, // Renamed from Landscape
         "details": { title: "Details & Moments", folder: "wisuda", count: 20 },
-        "wedding": { title: "Wedding Stories", folder: "wedding", count: 20 }
+        "wedding": { title: "Wedding Stories", folder: "wedding", count: 20 },
+        "prewedding": { title: "Prewedding", folder: "prewedding", count: 20 }
     };
 
     function initPhotographySystem() {
