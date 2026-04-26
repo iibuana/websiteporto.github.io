@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css?v=17">
+    <link rel="stylesheet" href="css/style.css?v=21">
 </head>
 
 <body>
@@ -219,31 +219,24 @@
         </div>
     </footer>
 
-    <script src="js/main.js?v=21"></script>
+    <script src="js/main.js?v=22"></script>
 
-    <!-- SVG Filters for Convex Liquid Refraction (Glass Lens Effect) -->
+    <!-- SVG Filters for Convex Liquid Refraction (Safari Optimized) -->
     <svg style="visibility: hidden; position: absolute;" width="0" height="0" xmlns="http://www.w3.org/2000/svg" version="1.1">
         <defs>
-            <!-- Vertical Bulge Gradient -->
-            <linearGradient id="lens-map" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="black" />
-                <stop offset="50%" stop-color="white" />
-                <stop offset="100%" stop-color="black" />
-            </linearGradient>
-            
             <filter id="liquid-glass" color-interpolation-filters="sRGB" x="-50%" y="-50%" width="200%" height="200%">
-                <!-- Create a vertical gradient mask for the bulge effect -->
-                <feFlood flood-color="white" result="white" />
-                <feImage result="gradient" xlink:href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3ClinearGradient id='g' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='black'/%3E%3Cstop offset='0.5' stop-color='white'/%3E%3Cstop offset='1' stop-color='black'/%3E%3C/linearGradient%3E%3Crect width='100' height='100' fill='url(%23g)'/%3E%3C/svg%3E" />
+                <!-- Stretched turbulence creates vertical distortion like a cylinder -->
+                <feTurbulence type="fractalNoise" baseFrequency="0.001 0.05" numOctaves="1" result="noise" />
                 
-                <!-- Combine with a little turbulence for organic look -->
-                <feTurbulence type="fractalNoise" baseFrequency="0.01 0.05" numOctaves="2" result="noise" />
-                <feComposite in="gradient" in2="noise" operator="arithmetic" k1="0" k2="0.8" k3="0.2" k4="0" result="combinedMap" />
+                <!-- Create a 3D surface map from the noise -->
+                <feDiffuseLighting in="noise" lighting-color="white" surfaceScale="10" result="diffuse">
+                    <feDistantLight azimuth="45" elevation="45" />
+                </feDiffuseLighting>
 
-                <!-- Displace to create the convex bulge and chromatic aberration -->
-                <feDisplacementMap in="SourceGraphic" in2="combinedMap" scale="50" xChannelSelector="R" yChannelSelector="G" result="r" />
-                <feDisplacementMap in="SourceGraphic" in2="combinedMap" scale="60" xChannelSelector="R" yChannelSelector="G" result="g" />
-                <feDisplacementMap in="SourceGraphic" in2="combinedMap" scale="70" xChannelSelector="R" yChannelSelector="G" result="b" />
+                <!-- Use the 3D surface for the convex displacement -->
+                <feDisplacementMap in="SourceGraphic" in2="diffuse" scale="70" xChannelSelector="R" yChannelSelector="G" result="r" />
+                <feDisplacementMap in="SourceGraphic" in2="diffuse" scale="80" xChannelSelector="R" yChannelSelector="G" result="g" />
+                <feDisplacementMap in="SourceGraphic" in2="diffuse" scale="90" xChannelSelector="R" yChannelSelector="G" result="b" />
 
                 <feColorMatrix in="r" type="matrix" values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" result="rOnly"/>
                 <feColorMatrix in="g" type="matrix" values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0" result="gOnly"/>
